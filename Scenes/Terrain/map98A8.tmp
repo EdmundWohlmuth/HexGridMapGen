@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddikbmyttje32"]
+
+[ext_resource type="Script" path="res://Scripts/Terrain/map_gen.gd" id="1_uh34i"]
+[ext_resource type="Script" path="res://Scripts/Controllers/CamController.gd" id="2_1wtl7"]
+
+[node name="Map" type="Node3D"]
+script = ExtResource("1_uh34i")
+world_size = 128
+terrain_array = null
+gen_passes = 5
+gen_weight = 3
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 6, 0)
+script = ExtResource("2_1wtl7")
+move_speed = 10.0
+zoom_speed = 40.0
+
+[node name="TerrainHolder" type="Node" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.258819, 0.965926, 0, -0.965926, -0.258819, 0, 3, 0)

@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://dupigbn3ia0c"]
+
+[ext_resource type="Script" path="res://Scripts/UI/in_game_ui.gd" id="1_uto7e"]
+
+[node name="InGame_UI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uto7e")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 324.0
+offset_right = 183.0
+offset_bottom = 646.0
+
+[node name="ProvinceNameLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_right = 183.0
+offset_bottom = 26.0
+text = "PROVINCE NAME"
+
+[node name="BiomeLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_top = 26.0
+offset_right = 183.0
+offset_bottom = 52.0
+text = "BIOME: NAME"
+
+[node name="LatitudeLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_top = 52.0
+offset_right = 183.0
+offset_bottom = 78.0
+text = "LATITUDE: "
+
+[node name="TemperatureLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_top = 78.0
+offset_right = 183.0
+offset_bottom = 104.0
+text = "TEMPERATURE: "
+
+[node name="PrecipitationLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_top = 104.0
+offset_right = 183.0
+offset_bottom = 130.0
+text = "PRECIPITATION: "
+
+[node name="FeaturesLabel" type="Label" parent="Panel"]
+layout_mode = 0
+offset_top = 130.0
+offset_right = 183.0
+offset_bottom = 156.0
+text = "FEATURES: "

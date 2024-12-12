@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7yyl8d3bnm0c"]
+
+[ext_resource type="Script" path="res://Scripts/Terrain/world.gd" id="1_4k7fn"]
+[ext_resource type="Script" path="res://Scripts/Controllers/CamController.gd" id="2_473uq"]
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_4k7fn")
+x_scale = 12
+z_scale = 20
+
+[node name="HexContainer" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1.89892e-08, 0.707107, -0.707107, -4.42787e-08, 0.707107, 0.707107, 1, 1.78824e-08, 4.47372e-08, -7, 3, 5)
+script = ExtResource("2_473uq")
+move_speed = 2.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.683013, -0.183013, 0, -0.258819, 0.965926, -0.707107, -0.683013, -0.183013, 0, 13, 0)

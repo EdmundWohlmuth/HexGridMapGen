@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bdta44vkhpq5h"]
+
+[ext_resource type="Script" path="res://Scripts/Managers/ui_manager.gd" id="1_n8mwv"]
+[ext_resource type="PackedScene" uid="uid://dupigbn3ia0c" path="res://Scenes/UI/in_game_ui.tscn" id="2_a7vdy"]
+
+[node name="UI_Manager" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n8mwv")
+
+[node name="InGame_UI" parent="." instance=ExtResource("2_a7vdy")]
+layout_mode = 1
