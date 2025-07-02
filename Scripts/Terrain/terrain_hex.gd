@@ -2,10 +2,12 @@ extends Node3D
 class_name terrain_hex
 
 @onready var hex_mesh = $HexMesh
+var cord:Vector2
 
 var annual_percipitation:float
 var average_annual_temp:float
 var is_land:bool
+var continent_id:int
 
 var hex_biome:WorldManager.biomes
 var hex_features:Array[WorldManager.terrain_features]
@@ -15,6 +17,7 @@ var is_north:bool
 
 func set_biome(biome:WorldManager.biomes):
   if biome == hex_biome: return
+  if hex_mesh == null: return
   match biome:
     WorldManager.biomes.GRASSLAND:
       hex_mesh.material_override = WorldManager.GRASSLAND

@@ -7,6 +7,7 @@ extends Control
 @onready var latitude_label = $Panel/LatitudeLabel
 @onready var temperature_label = $Panel/TemperatureLabel
 @onready var precipitation_label = $Panel/PrecipitationLabel
+@onready var continent_label = $Panel/ContinentLabel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -17,7 +18,7 @@ func _ready():
 func _process(_delta):
   pass
   
-func display_hex_data(_name:String, _biome:String, _latitude:float, _temperature:float, _precip:float):
+func display_hex_data(_name:String, _biome:String, _latitude:float, _temperature:float, _precip:float, _id:int):
   panel.visible = true
   province_name_label.text = "Terra Nova"
   biome_label.text = "Biome: " + _biome
@@ -28,6 +29,7 @@ func display_hex_data(_name:String, _biome:String, _latitude:float, _temperature
 
   temperature_label.text = "Temp: " + str(_temperature) + " C"
   precipitation_label.text = "Precipitation: " + str(_precip) + " mm"
+  continent_label.text = "ID: " + str(_id)
 
 func hide_hex_data():
   panel.visible = false

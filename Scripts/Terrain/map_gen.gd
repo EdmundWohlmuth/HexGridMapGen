@@ -8,11 +8,23 @@ const HEX_HEIGHT:float = 1.73205080757 # 2 * 1 (hex radius)
 @export var terrain_array:Array[Array]
 @export var gen_passes:int
 @export var gen_weight:int
+@export var large_continents_num:int
+@export var small_continents_num:int
 @export var inital_land_ratio:int
 @export var _seed:int
 @export var is_rand:bool
 
+@export var continents_list:Array[Array]
+
+enum gen_types
+{
+  random,
+  continents
+}
+@export var gen_type:gen_types
+
 var rng = RandomNumberGenerator.new()
+var total_continents:int
 
 var world_x:int
 var world_y:int
@@ -20,6 +32,7 @@ var world_y:int
 @onready var camera = $Camera3D
 
 func _ready():
+  terrain_array = []
   
   if is_rand: 
     _seed = rng.randi()
@@ -28,7 +41,14 @@ func _ready():
   print("seed = " + str(_seed))
   
   generate_map()
-  if gen_passes > 0:
+  
+  match gen_type:
+    gen_types.random:
+      random_fill_land()
+    gen_types.continents:
+      pass
+  
+  if gen_passes > 0 && gen_type == gen_types.random:
     for p in gen_passes:
       generate_continents_pass(p)
     generate_latitude_pass()
@@ -43,7 +63,7 @@ func generate_map():
     terrain_array.append([])     
   
   var x_offset:int = 0
-  #print("map size: " + str(world_x) + " x " + str(world_y))
+  print("map size: " + str(world_x) + " x " + str(world_y))
   
   var actual_x = (world_y / 2) * -1
   var actual_z = actual_x
@@ -67,12 +87,21 @@ func generate_map():
       hex.position = Vector3(actual_x + x_offset, 0, actual_z)
       $TerrainHolder.add_child(hex)
       terrain_array[x].append(hex)
+      hex.cord = Vector2(x, y)
       
+
+  ## ============================================================= ##     
+
+# randomly sets terrain hexes to be either land or water
+func random_fill_land():
+  for y in world_y:
+    for x in world_x:
+      var hex = terrain_array[x][y]
       if randi_range(0, 100) >= inital_land_ratio: 
         hex.set_biome(WorldManager.biomes.GRASSLAND)
       else: 
         hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
-  ## ============================================================= ##     
+ 
 
 # Smooths out the terrain generation by looking for nearby terrains to fill out the map
 func generate_continents_pass(_pass:int): # LOOK INTO - can probably be multi-purpose
@@ -82,7 +111,9 @@ func generate_continents_pass(_pass:int): # LOOK INTO - can probably be multi-pu
     temp_array.append([])
     for x in terrain_array[y].size():
      
-      var neighbors:Array = get_neighbor_array(Vector2(y, x))
+      print(str(terrain_array.size()) + " x " + str(terrain_array[y].size()))
+    
+      var neighbors:Array = get_neighbor_array(Vector2(x, y))
       var neighbor_count:int = 0
       var biome_to_smooth:Array[WorldManager.biomes] = [0, 0]
       
@@ -146,10 +177,22 @@ func generate_latitude_pass():
 
 func generate_climate_pass():
   var neighbors:Array[terrain_hex]
+  var ave_temp:float = 0
+  var neighbor_temps:Array[float]
   
   for y in world_y:
+    # get neighbors
     for x in world_x: 
       neighbors = get_prevailing_wind_hexes(Vector2(x, y))
+      
+      # get average temperature
+      for n in neighbors:
+        neighbor_temps.append(terrain_array[x][y].average_annual_temp)
+      for a in neighbor_temps:
+        ave_temp += a 
+      ave_temp /= neighbor_temps.size()
+    
+    
 
 # checks the bottom right or top left hexes of given coord depending on prevailing winds
 func get_prevailing_wind_hexes(coord:Vector2) -> Array[terrain_hex]: # this whole this is kinda gross
