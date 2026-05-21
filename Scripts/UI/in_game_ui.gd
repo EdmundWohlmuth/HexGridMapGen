@@ -9,10 +9,11 @@ extends Control
 @onready var precipitation_label = $Panel/PrecipitationLabel
 @onready var continent_label = $Panel/ContinentLabel
 
+@onready var regen_button: Button = $Panel/RegenButton ## TEMP
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
   pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -33,3 +34,7 @@ func display_hex_data(_name:String, _biome:String, _latitude:float, _temperature
 
 func hide_hex_data():
   panel.visible = false
+
+
+func _on_regen_button_pressed() -> void:
+  SignalManager.emit_signal("regenerate_terrain")

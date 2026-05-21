@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://c6b8uocrpts1c"]
+[gd_scene load_steps=6 format=4 uid="uid://c6b8uocrpts1c"]
 
-[ext_resource type="Script" path="res://Scripts/Terrain/terrain_hex.gd" id="1_yyq6c"]
+[ext_resource type="Script" uid="uid://b7iuyd64cpdp2" path="res://Scripts/Terrain/terrain_hex.gd" id="1_yyq6c"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sfmjm"]
 
@@ -9,11 +9,11 @@ _surfaces = [{
 "aabb": AABB(-0.866025, 1, -1, 1.73205, 1.00136e-05, 2),
 "format": 34896613377,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 2, 0, 1, 0, 3, 0, 0, 0, 1, 0, 3, 0, 1, 0, 4, 0, 3, 0, 4, 0, 5, 0),
+"index_data": PackedByteArray("AAACAAEAAwAAAAEAAwABAAQAAwAEAAUA"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 6,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 255, 63, 0, 0, 255, 255, 0, 0, 255, 63, 0, 0, 255, 127, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 191, 0, 0, 255, 255, 0, 0, 255, 191, 0, 0, 255, 127, 0, 0, 255, 255, 0, 0)
+"vertex_data": PackedByteArray("AAAAAP8/AAD//wAA/z8AAP9/AAAAAAAAAAAAAP+/AAD//wAA/78AAP9/AAD//wAA")
 }]
 blend_shape_mode = 0
 
@@ -21,15 +21,15 @@ blend_shape_mode = 0
 resource_name = "hexagon_Circle_001"
 _surfaces = [{
 "aabb": AABB(-0.866025, 1, -1, 1.73205, 1.00136e-05, 2),
-"attribute_data": PackedByteArray(0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255),
+"attribute_data": PackedByteArray("AAD//wAA//8AAP//AAD//wAA//8AAP//"),
 "format": 34896613399,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 2, 0, 1, 0, 3, 0, 0, 0, 1, 0, 3, 0, 1, 0, 4, 0, 3, 0, 4, 0, 5, 0),
+"index_data": PackedByteArray("AAACAAEAAwAAAAEAAwABAAQAAwAEAAUA"),
 "material": SubResource("StandardMaterial3D_sfmjm"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 6,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 255, 63, 255, 191, 255, 255, 0, 0, 255, 63, 255, 191, 255, 127, 0, 0, 0, 0, 255, 191, 0, 0, 0, 0, 255, 191, 255, 191, 255, 255, 0, 0, 255, 191, 255, 191, 255, 127, 0, 0, 255, 255, 255, 191, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127)
+"vertex_data": PackedByteArray("AAAAAP8//7///wAA/z//v/9/AAAAAP+/AAAAAP+//7///wAA/7//v/9/AAD///+/////f////3////9/////f////3////9/")
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_x10me")

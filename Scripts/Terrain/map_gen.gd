@@ -32,6 +32,16 @@ var world_y:int
 @onready var camera = $Camera3D
 
 func _ready():
+  SignalManager.connect("regenerate_terrain", ready_map_maker)
+  ready_map_maker()
+
+func ready_map_maker():
+  var temp_terrain_array = terrain_array
+  
+  for x in temp_terrain_array.size():
+    for y in temp_terrain_array[x].size():
+      terrain_array[x][y].queue_free()
+  
   terrain_array = []
   
   if is_rand: 
@@ -55,6 +65,7 @@ func _ready():
     generate_biome_pass()
     generate_climate_pass()
 
+
 func generate_map():
   world_x = world_size
   world_y = roundi(world_size / 2)
@@ -63,7 +74,7 @@ func generate_map():
     terrain_array.append([])     
   
   var x_offset:int = 0
-  print("map size: " + str(world_x) + " x " + str(world_y))
+  #print("map size: " + str(world_x) + " x " + str(world_y))
   
   var actual_x = (world_y / 2) * -1
   var actual_z = actual_x
@@ -111,9 +122,9 @@ func generate_continents_pass(_pass:int): # LOOK INTO - can probably be multi-pu
     temp_array.append([])
     for x in terrain_array[y].size():
      
-      print(str(terrain_array.size()) + " x " + str(terrain_array[y].size()))
+      #print(str(terrain_array.size()) + " x " + str(terrain_array[y].size()))
     
-      var neighbors:Array = get_neighbor_array(Vector2(x, y))
+      var neighbors:Array = get_neighbor_array(Vector2(y, x))
       var neighbor_count:int = 0
       var biome_to_smooth:Array[WorldManager.biomes] = [0, 0]
       
@@ -141,7 +152,7 @@ func coastline_pass():
   for y in terrain_array.size():
     temp_array.append([])
     for x in terrain_array[y].size():
-      var neighbors = get_neighbor_array(Vector2(y, x))
+      var neighbors = get_neighbor_array(Vector2(x, y))
       var neighbor_count:int = 0
       
       for n:terrain_hex in neighbors:

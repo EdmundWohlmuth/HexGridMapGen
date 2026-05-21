@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dupigbn3ia0c"]
 
-[ext_resource type="Script" path="res://Scripts/UI/in_game_ui.gd" id="1_uto7e"]
+[ext_resource type="Script" uid="uid://bwdduyd7hko2f" path="res://Scripts/UI/in_game_ui.gd" id="1_uto7e"]
 
 [node name="InGame_UI" type="Control"]
 layout_mode = 3
@@ -64,3 +64,13 @@ offset_top = 156.0
 offset_right = 183.0
 offset_bottom = 182.0
 text = "ID: "
+
+[node name="RegenButton" type="Button" parent="Panel"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 264.0
+offset_right = 169.0
+offset_bottom = 306.0
+text = "Regenerate Terrain"
+
+[connection signal="pressed" from="Panel/RegenButton" to="." method="_on_regen_button_pressed"]

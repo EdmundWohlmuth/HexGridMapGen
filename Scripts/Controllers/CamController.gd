@@ -43,7 +43,7 @@ func shoot_ray():
   
   if final_result != null:
     emit_signal("hex_clicked", test, WorldManager.biomes.find_key(final_result.hex_biome), final_result.hex_latitude, final_result.hex_temperature, final_result.annual_percipitation, final_result.continent_id)
-  else: emit_signal("clicked_off")
+  #else: emit_signal("clicked_off")
   
 
 
