@@ -11,6 +11,7 @@ const SAVANNA = preload("res://Assets/Materials/Savanna.tres")
 const TEMPERATE_GRASSLAND = preload("res://Assets/Materials/Temperate_Grassland.tres")
 const TEMPERATE_RAINFOREST = preload("res://Assets/Materials/Temperate_Rainforest.tres")
 const TUNDRA = preload("res://Assets/Materials/Tundra.tres")
+const ICE = preload("res://Assets/Materials/ice.tres")
 ## === WATER MATS === ##
 const SALT_LITTORAL = preload("res://Assets/Materials/Shallow_Water.tres")
 const OPEN_OCEAN = preload("res://Assets/Materials/DEEP_WATERtres.tres")
@@ -43,3 +44,10 @@ enum biomes
   OPEN_OCEAN,
   ICE
 }
+
+# Precip, temp
+var taregt_biome_stats:Array[Vector2] = [
+  Vector2(0, -10), # TUNDRA
+  Vector2(2000, 0), # BOREAL FOREST
+  Vector2(500, 0), #SHRUBLAND
+]

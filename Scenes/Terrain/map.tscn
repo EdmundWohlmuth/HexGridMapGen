@@ -1,25 +1,37 @@
-[gd_scene load_steps=3 format=3 uid="uid://ddikbmyttje32"]
+[gd_scene load_steps=6 format=3 uid="uid://ddikbmyttje32"]
 
 [ext_resource type="Script" uid="uid://bfgfvelyll6ge" path="res://Scripts/Terrain/map_gen.gd" id="1_uh34i"]
 [ext_resource type="Script" uid="uid://cthunmyy8v28f" path="res://Scripts/Controllers/CamController.gd" id="2_1wtl7"]
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tef1l"]
+noise_type = 2
+frequency = 0.045
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ixgil"]
+width = 64
+height = 32
+noise = SubResource("FastNoiseLite_tef1l")
+
+[sub_resource type="Environment" id="Environment_tef1l"]
+background_mode = 1
+
 [node name="Map" type="Node3D"]
 script = ExtResource("1_uh34i")
-world_size = 64
+world_size = 80
 terrain_array = Array[Array]([[Object(Node3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -14.2679),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"script":Resource("res://Scripts/Terrain/terrain_hex.gd"))
 , Object(Node3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -14.2679),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"script":Resource("res://Scripts/Terrain/terrain_hex.gd"))
 ], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []])
-gen_passes = 4
-gen_weight = 2
+noise_tex = SubResource("NoiseTexture2D_ixgil")
+gen_type = 2
 inital_land_ratio = 60
-_seed = 1187611801
-is_rand = true
+_seed = 2881289012
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 6, 0)
+environment = SubResource("Environment_tef1l")
 script = ExtResource("2_1wtl7")
-move_speed = 10.0
-zoom_speed = 40.0
+move_speed = 20.0
+zoom_speed = 80.0
 
 [node name="TerrainHolder" type="Node" parent="."]
 

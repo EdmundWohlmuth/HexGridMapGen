@@ -1,0 +1,134 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1oqqr28tm10k"]
+
+[ext_resource type="Script" uid="uid://ddngbw7gin80a" path="res://Scenes/UI/build_a_planet_ui.gd" id="1_ib6tq"]
+
+[node name="build-a-planet_ui" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ib6tq")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 799.0
+offset_top = 60.0
+offset_right = 1150.0
+offset_bottom = 648.0
+
+[node name="BiomesVBox" type="VBoxContainer" parent="Panel"]
+visible = false
+custom_minimum_size = Vector2(1.84, 0)
+layout_mode = 2
+offset_left = 15.0
+offset_top = 6.0
+offset_right = 337.0
+offset_bottom = 573.0
+theme_override_constants/separation = 8
+
+[node name="DesertButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Desert"
+
+[node name="SavannaButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Savanna"
+
+[node name="ShrublandButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Shurbland"
+
+[node name="GrasslandButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Grassland"
+
+[node name="SeasonalButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Seasonal"
+
+[node name="TemperateButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Temperate Rainforest"
+
+[node name="RainforestButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Rainforest"
+
+[node name="TundraButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Tundra"
+
+[node name="ArticButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Artic"
+
+[node name="LittoralSeaButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Littoral Ocean"
+
+[node name="OpenSeaButton" type="Button" parent="Panel/BiomesVBox"]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+text = "Open Ocean"
+
+[node name="OptionsVBox" type="VBoxContainer" parent="Panel"]
+custom_minimum_size = Vector2(1.84, 0)
+layout_mode = 2
+offset_left = 15.0
+offset_top = 6.0
+offset_right = 337.0
+offset_bottom = 573.0
+theme_override_constants/separation = 8
+
+[node name="ClimateGenButton" type="Button" parent="Panel/OptionsVBox"]
+layout_mode = 2
+text = "Generate Climate (Whole Map)"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 800.0
+offset_top = 10.0
+offset_right = 1151.0
+offset_bottom = 60.0
+vertical_scroll_mode = 0
+
+[node name="TabBar" type="TabBar" parent="ScrollContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+current_tab = 0
+tab_count = 4
+tab_0/title = "Biomes"
+tab_1/title = "Features"
+tab_2/title = "Resources"
+tab_3/title = "Options"
+
+[node name="SaveButton" type="Button" parent="."]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 0
+offset_right = 45.0
+offset_bottom = 16.0
+text = "Save"
+
+[node name="BackButton" type="Button" parent="."]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 0
+offset_left = 119.0
+offset_right = 219.0
+offset_bottom = 40.0
+text = "Back"
+
+[connection signal="tab_clicked" from="ScrollContainer/TabBar" to="." method="_on_tab_bar_tab_clicked"]

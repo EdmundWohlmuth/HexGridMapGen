@@ -49,5 +49,9 @@ func set_biome(biome:WorldManager.biomes):
     WorldManager.biomes.OPEN_OCEAN:
       hex_mesh.material_override = WorldManager.OPEN_OCEAN
       is_land = false
+    WorldManager.biomes.ICE:
+      hex_mesh.material_override = WorldManager.ICE
+    WorldManager.biomes.TUNDRA:
+      hex_mesh.material_override = WorldManager.TUNDRA
     
   hex_biome = biome
