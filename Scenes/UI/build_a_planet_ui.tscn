@@ -19,7 +19,6 @@ offset_right = 1150.0
 offset_bottom = 648.0
 
 [node name="BiomesVBox" type="VBoxContainer" parent="Panel"]
-visible = false
 custom_minimum_size = Vector2(1.84, 0)
 layout_mode = 2
 offset_left = 15.0
@@ -84,6 +83,7 @@ layout_mode = 2
 text = "Open Ocean"
 
 [node name="OptionsVBox" type="VBoxContainer" parent="Panel"]
+visible = false
 custom_minimum_size = Vector2(1.84, 0)
 layout_mode = 2
 offset_left = 15.0

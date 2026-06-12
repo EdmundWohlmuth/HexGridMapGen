@@ -37,4 +37,4 @@ func hide_hex_data():
 
 
 func _on_regen_button_pressed() -> void:
-  SignalManager.emit_signal("regenerate_terrain")
+  SignalManager.emit_signal("_regenerate_terrain")

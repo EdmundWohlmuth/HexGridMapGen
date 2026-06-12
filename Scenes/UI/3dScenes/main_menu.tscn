@@ -1,0 +1,65 @@
+[gd_scene load_steps=9 format=3 uid="uid://jrybl7630k02"]
+
+[ext_resource type="Script" uid="uid://c0ws7eef15v3s" path="res://Scripts/Juice/UIJuice/spin_me.gd" id="1_bgu88"]
+[ext_resource type="Script" uid="uid://cg28y4rbi23fq" path="res://Scenes/UI/3dScenes/main_menu.gd" id="1_uofus"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_yx2yo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uofus"]
+albedo_color = Color(0.584314, 1, 1, 1)
+emission = Color(0, 0.933333, 0.996078, 1)
+emission_energy_multiplier = 0.1
+
+[sub_resource type="Environment" id="Environment_bgu88"]
+background_mode = 1
+ambient_light_source = 1
+reflected_light_source = 1
+
+[sub_resource type="SphereMesh" id="SphereMesh_bgu88"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bgu88"]
+albedo_color = Color(1, 0.792157, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.741176, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_uofus"]
+
+[node name="MainMenu" type="Node3D"]
+script = ExtResource("1_uofus")
+
+[node name="PlanetPivotNode" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7.9)
+script = ExtResource("1_bgu88")
+speed = 30.0
+
+[node name="WorldMesh" type="MeshInstance3D" parent="PlanetPivotNode"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.9)
+mesh = SubResource("SphereMesh_yx2yo")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_uofus")
+script = ExtResource("1_bgu88")
+speed = -5.0
+
+[node name="Camera3D" type="Camera3D" parent="PlanetPivotNode/WorldMesh"]
+transform = Transform3D(0.642788, 0, -0.766044, 0, 1, 0, 0.766044, 0, 0.642788, -1.6, 0, 0.400001)
+environment = SubResource("Environment_bgu88")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="PlanetPivotNode"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+light_energy = 2.0
+shadow_enabled = true
+omni_range = 44.5
+
+[node name="SunMesh" type="MeshInstance3D" parent="PlanetPivotNode"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
+mesh = SubResource("SphereMesh_bgu88")
+surface_material_override/0 = SubResource("StandardMaterial3D_bgu88")
+
+[node name="MoonPivotNode" type="Node3D" parent="PlanetPivotNode/SunMesh"]
+transform = Transform3D(-0.995519, -0.00182753, -0.0945475, -0.00687538, 0.998566, 0.0530913, 0.0943149, 0.0535034, -0.994104, 0, 0, 8.625)
+script = ExtResource("1_bgu88")
+speed = 20.0
+
+[node name="MoonMesh" type="MeshInstance3D" parent="PlanetPivotNode/SunMesh/MoonPivotNode"]
+transform = Transform3D(0.25, 0, -5.32907e-15, 0, 0.25, 0, 5.32907e-15, 0, 0.25, -3.16907e-07, 0, 2.625)
+mesh = SubResource("SphereMesh_uofus")

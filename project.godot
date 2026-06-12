@@ -11,15 +11,17 @@ config_version=5
 [application]
 
 config/name="Grid Map Gen"
-run/main_scene="res://Scenes/Terrain/map.tscn"
+run/main_scene="uid://jrybl7630k02"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 WorldManager="*res://Scripts/Managers/world_manager.gd"
-UiManager="*res://Scenes/Managers/ui_manager.tscn"
 SignalManager="*res://Scripts/Managers/SignalManager.gd"
+GameManager="*res://Scripts/Managers/GameManager.gd"
+SceneManager="*res://Scripts/Managers/SceneManager.gd"
+UiManager="*res://Scenes/Managers/ui_manager.tscn"
 
 [input]
 

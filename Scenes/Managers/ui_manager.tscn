@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://bdta44vkhpq5h"]
+[gd_scene load_steps=6 format=3 uid="uid://bdta44vkhpq5h"]
 
 [ext_resource type="Script" uid="uid://cvxvsitsmi3or" path="res://Scripts/Managers/ui_manager.gd" id="1_n8mwv"]
 [ext_resource type="PackedScene" uid="uid://dupigbn3ia0c" path="res://Scenes/UI/in_game_ui.tscn" id="2_a7vdy"]
+[ext_resource type="PackedScene" uid="uid://c7m45skwnsrvj" path="res://Scenes/UI/main_menu_ui.tscn" id="3_7dx3p"]
+[ext_resource type="PackedScene" uid="uid://bnvviobvt1ael" path="res://Scenes/UI/loading_screen.tscn" id="4_k8jsh"]
+[ext_resource type="PackedScene" uid="uid://b1oqqr28tm10k" path="res://Scenes/UI/build_a_planet_ui.tscn" id="5_02iru"]
 
 [node name="UI_Manager" type="Control"]
 layout_mode = 3
@@ -13,4 +16,16 @@ grow_vertical = 2
 script = ExtResource("1_n8mwv")
 
 [node name="InGame_UI" parent="." instance=ExtResource("2_a7vdy")]
+visible = false
 layout_mode = 1
+
+[node name="Main_Menu_UI" parent="." instance=ExtResource("3_7dx3p")]
+layout_mode = 1
+
+[node name="build-a-planet_ui" parent="." instance=ExtResource("5_02iru")]
+visible = false
+layout_mode = 1
+
+[node name="loading_screen" parent="." instance=ExtResource("4_k8jsh")]
+layout_mode = 1
+offset_bottom = -6.10352e-05

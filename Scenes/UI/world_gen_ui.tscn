@@ -1,0 +1,98 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxjxlsyojd4xi"]
+
+[ext_resource type="Script" uid="uid://emw42bop14cq" path="res://Scenes/UI/world_gen_ui.gd" id="1_uwpn4"]
+
+[node name="WorldGen_UI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uwpn4")
+
+[node name="BGPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="BGPanel2" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 92.0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_right = 418.0
+offset_bottom = 76.0
+theme_override_font_sizes/font_size = 32
+text = "World Generation Settings"
+
+[node name="TabBar" type="TabBar" parent="."]
+layout_mode = 0
+offset_top = 47.0
+offset_right = 974.0
+offset_bottom = 92.0
+current_tab = 0
+tab_count = 3
+tab_0/title = "Base Generation Settings"
+tab_1/title = "Climate Settings"
+tab_2/title = "Oceans Settings"
+
+[node name="GenerateButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 978.0
+offset_top = 46.0
+offset_right = 1148.0
+offset_bottom = 89.0
+text = "GENERATE"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 978.0
+offset_top = 598.0
+offset_right = 1148.0
+offset_bottom = 641.0
+text = "Back to Menu"
+
+[node name="BaseGenOptionsHolder" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BaseGenOptionsHolder"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 100.0
+offset_right = 338.0
+offset_bottom = 172.0
+
+[node name="RandLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+text = "Random Generation"
+
+[node name="RandCheckButton" type="CheckButton" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="HSeparator" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+
+[node name="GenLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+text = "Generation Type"
+
+[node name="OptionButton" type="OptionButton" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+item_count = 2
+popup/item_0/text = "Random"
+popup/item_0/id = 0
+popup/item_1/text = "Noise"
+popup/item_1/id = 1
+
+[node name="HSeparator2" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+
+[connection signal="tab_clicked" from="TabBar" to="." method="_on_tab_bar_tab_clicked"]

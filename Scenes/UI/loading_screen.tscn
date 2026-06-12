@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnvviobvt1ael"]
+
+[ext_resource type="Script" uid="uid://db3y2d3b7ke8t" path="res://Scenes/UI/loading_screen.gd" id="1_qj53y"]
+
+[node name="loading_screen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_qj53y")
+fade_time_in = 0.5
+fade_time_out = 0.5
+fade_from_color = Color(0, 0, 0, 0)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="Label" type="Label" parent="ColorRect"]
+modulate = Color(1, 1, 1, 0)
+z_index = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 128
+text = "LOADING..."
+horizontal_alignment = 1
+vertical_alignment = 1

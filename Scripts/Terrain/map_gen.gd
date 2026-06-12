@@ -4,7 +4,7 @@ const TERRAIN_HEX = preload("res://Scenes/Terrain/terrain_hex.tscn")
 const HEX_WIDTH:float = 2 # sqrt(3) * 1 (hex radius)
 const HEX_HEIGHT:float = 1.73205080757 # 2 * 1 (hex radius)
 
-@export var world_size:int
+@export var world_size:int = 64
 @export var terrain_array:Array[Array]
 @export var large_continents_num:int
 @export var small_continents_num:int
@@ -18,13 +18,14 @@ enum gen_types
 {
   random,
   continents,
-  noise_gen
+  noise_gen,
+  blank
 }
-@export var gen_type:gen_types
+@export var gen_type:gen_types = gen_types.noise_gen
 
-@export var inital_land_ratio:int
+@export var inital_land_ratio:int = 60
 @export var _seed:int
-@export var is_rand:bool
+@export var is_rand:bool = true
 @export var should_smooth:bool
 @export var gen_passes:int = 6
 @export var gen_weight:int = 2
@@ -41,7 +42,7 @@ var first_gen:bool = true
 @onready var camera = $Camera3D
 
 func _ready():
-  SignalManager.connect("regenerate_terrain", ready_map_maker)
+  SignalManager.connect("_regenerate_terrain", ready_map_maker)
   ready_size_dependant_vars()
   ready_map_maker()
   if !is_rand: is_rand = true
@@ -75,6 +76,8 @@ func ready_map_maker():
     gen_types.noise_gen:
       noise_fill_land()
       #border_smooth_pass()
+    gen_types.blank:
+      pass
   
   if gen_passes > 0 && should_smooth:
     for p in gen_passes:
@@ -122,6 +125,7 @@ func generate_map():
       $TerrainHolder.add_child(hex)
       terrain_array[x].append(hex)
       hex.cord = Vector2(x, y)
+      hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
       
 
   ## ============================================================= ##     
@@ -148,6 +152,8 @@ func noise_fill_land():
       var hex = terrain_array[x][y]
       if noise_tex.noise.get_noise_2d(x,y) > -.5: hex.set_biome(WorldManager.biomes.GRASSLAND)
       else: hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
+
+
 
 # Smooths out the terrain generation by looking for nearby terrains to fill out the map
 func smooth_terrain_pass(_pass:int): # LOOK INTO - can probably be multi-purpose
