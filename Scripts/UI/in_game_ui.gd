@@ -37,4 +37,6 @@ func hide_hex_data():
 
 
 func _on_regen_button_pressed() -> void:
+  var rng = RandomNumberGenerator.new()
+  WorldManager.seed = rng.randi()
   SignalManager.emit_signal("_regenerate_terrain")

@@ -45,9 +45,20 @@ enum biomes
   ICE
 }
 
-# Precip, temp
-var taregt_biome_stats:Array[Vector2] = [
-  Vector2(0, -10), # TUNDRA
-  Vector2(2000, 0), # BOREAL FOREST
-  Vector2(500, 0), #SHRUBLAND
-]
+enum gen_types
+{
+  random,
+  continents,
+  noise_gen,
+  blank
+}
+var gen_type:gen_types = gen_types.noise_gen
+
+var size
+var seed:int
+var gen_passes:int
+var gen_weight:int
+var climate_passes:int
+
+var inital_land_ratio:float
+var sea_level:float

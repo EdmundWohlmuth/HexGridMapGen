@@ -36,10 +36,11 @@ offset_top = 47.0
 offset_right = 974.0
 offset_bottom = 92.0
 current_tab = 0
-tab_count = 3
+tab_count = 4
 tab_0/title = "Base Generation Settings"
 tab_1/title = "Climate Settings"
 tab_2/title = "Oceans Settings"
+tab_3/title = "World Settings"
 
 [node name="GenerateButton" type="Button" parent="."]
 layout_mode = 0
@@ -67,15 +68,22 @@ layout_mode = 0
 offset_left = 12.0
 offset_top = 100.0
 offset_right = 338.0
-offset_bottom = 172.0
+offset_bottom = 598.0
 
 [node name="RandLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
 layout_mode = 2
-text = "Random Generation"
+text = "Random Seed"
 
 [node name="RandCheckButton" type="CheckButton" parent="BaseGenOptionsHolder/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
+button_pressed = true
+
+[node name="SeedTextEdit" type="TextEdit" parent="BaseGenOptionsHolder/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+placeholder_text = "Input Seed here..."
 
 [node name="HSeparator" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
 layout_mode = 2
@@ -84,8 +92,9 @@ layout_mode = 2
 layout_mode = 2
 text = "Generation Type"
 
-[node name="OptionButton" type="OptionButton" parent="BaseGenOptionsHolder/VBoxContainer"]
+[node name="GenOptionButton" type="OptionButton" parent="BaseGenOptionsHolder/VBoxContainer"]
 layout_mode = 2
+selected = 0
 item_count = 2
 popup/item_0/text = "Random"
 popup/item_0/id = 0
@@ -95,4 +104,152 @@ popup/item_1/id = 1
 [node name="HSeparator2" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
 layout_mode = 2
 
+[node name="WorldSizeLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+text = "World Size"
+
+[node name="HSlider" type="HSlider" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+min_value = 32.0
+max_value = 480.0
+value = 100.0
+scrollable = false
+ticks_on_borders = true
+
+[node name="SizeLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+text = "(SIZE)"
+
+[node name="HSeparator3" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+
+[node name="GenPassesLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "(Higher the Value the \"Smoother\" the Terrain and less islands.)"
+mouse_filter = 1
+text = "Generation Passes"
+
+[node name="PassesHSlider2" type="HSlider" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+max_value = 10.0
+value = 6.0
+
+[node name="PassesNumLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator4" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+
+[node name="GenWeightLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "(Lower the number the more small islands.)"
+mouse_filter = 1
+text = "Generation Weight"
+
+[node name="WeightHSlider" type="HSlider" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+max_value = 6.0
+value = 2.0
+
+[node name="WeightNumLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+
+[node name="ClimateBoxContainer" type="VBoxContainer" parent="BaseGenOptionsHolder"]
+visible = false
+layout_mode = 0
+offset_left = 12.0
+offset_top = 100.0
+offset_right = 338.0
+offset_bottom = 598.0
+
+[node name="ClimatePassesLabel" type="Label" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+text = "Climate Passes"
+
+[node name="ClimatePassSlider" type="HSlider" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+max_value = 10.0
+value = 3.0
+
+[node name="ClimatePassNumLabel" type="Label" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+text = "Passes:"
+
+[node name="HSeparator2" type="HSeparator" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+
+[node name="BaseTempLabel" type="Label" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+text = "Base Temperature Level"
+
+[node name="TempSlider" type="HSlider" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+
+[node name="BasePrecipLabel" type="Label" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+text = "Base Precipitation Level"
+
+[node name="PrecipSlider" type="HSlider" parent="BaseGenOptionsHolder/ClimateBoxContainer"]
+layout_mode = 2
+
+[node name="OceansBoxContainer" type="VBoxContainer" parent="BaseGenOptionsHolder"]
+visible = false
+layout_mode = 0
+offset_left = 12.0
+offset_top = 100.0
+offset_right = 338.0
+offset_bottom = 598.0
+
+[node name="SeaLevelsLabel" type="Label" parent="BaseGenOptionsHolder/OceansBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Sea Levels"
+
+[node name="SeaLevelSlider" type="HSlider" parent="BaseGenOptionsHolder/OceansBoxContainer/SeaLevelsLabel"]
+layout_mode = 2
+offset_top = 27.0
+offset_right = 326.0
+offset_bottom = 43.0
+min_value = -0.9
+max_value = -0.1
+step = 0.001
+value = -0.5
+
+[node name="HSeparator" type="HSeparator" parent="BaseGenOptionsHolder/OceansBoxContainer"]
+layout_mode = 2
+
+[node name="SeaRatioLabel" type="Label" parent="BaseGenOptionsHolder/OceansBoxContainer"]
+layout_mode = 2
+text = "Inital Land / Sea Ratio"
+
+[node name="SeaRatioSlider" type="HSlider" parent="BaseGenOptionsHolder/OceansBoxContainer/SeaRatioLabel"]
+layout_mode = 2
+offset_top = 27.0
+offset_right = 326.0
+offset_bottom = 43.0
+min_value = 10.0
+max_value = 90.0
+step = 0.1
+value = 60.0
+
+[node name="WorldBoxContainer" type="VBoxContainer" parent="BaseGenOptionsHolder"]
+visible = false
+layout_mode = 0
+offset_left = 12.0
+offset_top = 100.0
+offset_right = 338.0
+offset_bottom = 598.0
+
 [connection signal="tab_clicked" from="TabBar" to="." method="_on_tab_bar_tab_clicked"]
+[connection signal="pressed" from="GenerateButton" to="." method="_on_generate_button_pressed"]
+[connection signal="toggled" from="BaseGenOptionsHolder/VBoxContainer/RandCheckButton" to="." method="_on_rand_check_button_toggled"]
+[connection signal="item_selected" from="BaseGenOptionsHolder/VBoxContainer/GenOptionButton" to="." method="_on_gen_option_button_item_selected"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/PassesHSlider2" to="." method="_on_passes_h_slider_2_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/WeightHSlider" to="." method="_on_weight_h_slider_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/ClimateBoxContainer/ClimatePassSlider" to="." method="_on_climate_pass_slider_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/SeaLevelsLabel/SeaLevelSlider" to="." method="_on_sea_level_slider_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/SeaRatioLabel/SeaRatioSlider" to="." method="_on_sea_ratio_slider_value_changed"]

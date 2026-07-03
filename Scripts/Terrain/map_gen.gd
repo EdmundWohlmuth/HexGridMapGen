@@ -30,6 +30,7 @@ enum gen_types
 @export var gen_passes:int = 6
 @export var gen_weight:int = 2
 @export var climate_passes:int = 2
+@export var sea_level:float = -0.5
 
 var rng = RandomNumberGenerator.new()
 var total_continents:int
@@ -43,7 +44,6 @@ var first_gen:bool = true
 
 func _ready():
   SignalManager.connect("_regenerate_terrain", ready_map_maker)
-  ready_size_dependant_vars()
   ready_map_maker()
   if !is_rand: is_rand = true
 
@@ -51,7 +51,16 @@ func ready_size_dependant_vars():
   pass
 
 func ready_map_maker():
+  ready_size_dependant_vars()
   var temp_terrain_array = terrain_array
+  
+  world_size = WorldManager.size
+  gen_passes = WorldManager.gen_passes
+  gen_weight = WorldManager.gen_weight
+  climate_passes = WorldManager.climate_passes
+  sea_level = WorldManager.sea_level
+  inital_land_ratio = WorldManager.inital_land_ratio
+  _seed = WorldManager.seed
   
   for x in temp_terrain_array.size():
     for y in temp_terrain_array[x].size():
@@ -59,15 +68,15 @@ func ready_map_maker():
   
   terrain_array = []
   
-  if is_rand: 
-    _seed = rng.randi()
-  else: _seed = _seed
-  seed(_seed)
-  print("seed = " + str(_seed))
+  #if is_rand: 
+    #_seed = rng.randi()
+  #else: _seed = _seed
+  #seed(_seed)
+  #print("seed = " + str(_seed))
   
   generate_map()
   
-  match gen_type:
+  match WorldManager.gen_type:
     gen_types.random:
       random_fill_land()
       should_smooth = true
@@ -150,7 +159,7 @@ func noise_fill_land():
   for y in world_y:
     for x in world_x:
       var hex = terrain_array[x][y]
-      if noise_tex.noise.get_noise_2d(x,y) > -.5: hex.set_biome(WorldManager.biomes.GRASSLAND)
+      if noise_tex.noise.get_noise_2d(x,y) > sea_level: hex.set_biome(WorldManager.biomes.GRASSLAND)
       else: hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
 
 
@@ -248,19 +257,23 @@ func generate_climate_pass():
   for y in world_y:
     # get neighbors
     for x in world_x: 
-      if terrain_array[x][y].is_land:
+      #if terrain_array[x][y].is_land:
         neighbors = get_prevailing_wind_hexes(Vector2(x, y))
         
         var total_precip:float
         var total_temp:float
+        var water_count:int = 0
         
         # get average temperature
         for n in neighbors:
           total_temp += n.average_annual_temp
           total_precip += n.annual_percipitation
+          if !n.is_land: water_count += 1
         
-        terrain_array[x][y].annual_percipitation = (total_precip / neighbors.size())
-        terrain_array[x][y].average_annual_temp = ((total_temp / neighbors.size()))
+        if water_count == 3: terrain_array[x][y].annual_percipitation = 700
+        else: terrain_array[x][y].annual_percipitation = (total_precip / neighbors.size()) 
+        if water_count >= 1: terrain_array[x][y].average_annual_temp = ((total_temp / neighbors.size()))
+        
 
 
 # checks the bottom right or top left hexes of given coord depending on prevailing winds
@@ -271,11 +284,11 @@ func get_prevailing_wind_hexes(coord:Vector2) -> Array[terrain_hex]: # this whol
   var lat = terrain_array[coord.x][coord.y].hex_latitude
   
   # check latitude to determine which direction to check
-  if lat >= 60: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,6,5]) # POLAR CELL
-  elif lat >= 30: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [6,1,2]) # MID-LATITUDE CELL
+  if lat >= 60: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,6,2]) # POLAR CELL
+  elif lat >= 30: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,2,3]) # N WESTERLIES CELL
   elif lat >= 0: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [6,5,4]) # NORTHEASTERLY TRADE
   elif lat >= -30: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [2,3,4]) # SOUTHEASTERLY TRADE
-  elif lat >= -60: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [6,1,2]) # WESTERLIES
+  elif lat >= -60: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,6,2]) # S WESTERLIES
   else: temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [6,1,2]) # POLAR CELL
 
   return temp_hex_array
@@ -303,17 +316,17 @@ func generate_biome_pass():
             if precip > target_wobble(450, 50): 
               terrain_array[x][y].set_biome(WorldManager.biomes.RAINFOREST)
               break
-            elif precip > target_wobble(250, 25): 
+            elif precip > target_wobble(300, 25): 
               terrain_array[x][y].set_biome(WorldManager.biomes.SAVANNA)
               break
             else: 
               terrain_array[x][y].set_biome(WorldManager.biomes.DESERT)
               break
           elif temp > target_wobble(20, 1):
-            if precip > target_wobble(300, 75): 
-              terrain_array[x][y].set_biome(WorldManager.biomes.SEASONAL_FOREST)
+            if precip > target_wobble(250, 75):
+              terrain_array[x][y].set_biome(WorldManager.biomes.SAVANNA)
               break
-            elif precip > target_wobble(250, 50): 
+            elif precip > target_wobble(200, 50): 
               terrain_array[x][y].set_biome(WorldManager.biomes.SHRUBLAND)
               break
             elif precip > target_wobble(100, 25): 
