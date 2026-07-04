@@ -62,3 +62,7 @@ var climate_passes:int
 
 var inital_land_ratio:float
 var sea_level:float
+
+var map_wrap:bool = true
+var start_latitude:float = 90.0
+var end_latitude:float = 90.0

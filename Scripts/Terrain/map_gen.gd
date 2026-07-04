@@ -4,7 +4,7 @@ const TERRAIN_HEX = preload("res://Scenes/Terrain/terrain_hex.tscn")
 const HEX_WIDTH:float = 2 # sqrt(3) * 1 (hex radius)
 const HEX_HEIGHT:float = 1.73205080757 # 2 * 1 (hex radius)
 
-@export var world_size:int = 64
+@export var world_size:float = 64
 @export var terrain_array:Array[Array]
 @export var large_continents_num:int
 @export var small_continents_num:int
@@ -32,6 +32,8 @@ enum gen_types
 @export var climate_passes:int = 2
 @export var sea_level:float = -0.5
 
+var world_scale:float = 1.0
+
 var rng = RandomNumberGenerator.new()
 var total_continents:int
 
@@ -46,12 +48,14 @@ func _ready():
   SignalManager.connect("_regenerate_terrain", ready_map_maker)
   ready_map_maker()
   if !is_rand: is_rand = true
+  
+  print("seed: " + str(WorldManager.seed))
 
 func ready_size_dependant_vars():
-  pass
+  world_scale = world_size / 80.0
+  print("scale " + str(world_scale))
 
 func ready_map_maker():
-  ready_size_dependant_vars()
   var temp_terrain_array = terrain_array
   
   world_size = WorldManager.size
@@ -61,18 +65,13 @@ func ready_map_maker():
   sea_level = WorldManager.sea_level
   inital_land_ratio = WorldManager.inital_land_ratio
   _seed = WorldManager.seed
+  ready_size_dependant_vars()
   
   for x in temp_terrain_array.size():
     for y in temp_terrain_array[x].size():
       terrain_array[x][y].queue_free()
   
   terrain_array = []
-  
-  #if is_rand: 
-    #_seed = rng.randi()
-  #else: _seed = _seed
-  #seed(_seed)
-  #print("seed = " + str(_seed))
   
   generate_map()
   
@@ -97,9 +96,6 @@ func ready_map_maker():
   for x in climate_passes:
     generate_climate_pass()
     generate_biome_pass()
-
-  
-
 
 func generate_map():
   world_x = world_size
@@ -150,16 +146,18 @@ func random_fill_land():
         hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
  
 func noise_fill_land():
-  noise_tex.set_width(world_x)
-  noise_tex.set_height(world_y)
-  noise_tex.noise.seed = _seed
+  #noise_tex.set_width(world_x)
+  #noise_tex.set_height(world_y)
+  noise_tex.noise.seed = WorldManager.seed
   
-  print(str(Vector2(noise_tex.width, noise_tex.height)))
+  #print(str(Vector2(noise_tex.width, noise_tex.height)))
   
   for y in world_y:
+    var y_float:float = y / world_scale
     for x in world_x:
+      var x_float:float = x / world_scale
       var hex = terrain_array[x][y]
-      if noise_tex.noise.get_noise_2d(x,y) > sea_level: hex.set_biome(WorldManager.biomes.GRASSLAND)
+      if noise_tex.noise.get_noise_2d(x_float,y_float) > sea_level: hex.set_biome(WorldManager.biomes.GRASSLAND)
       else: hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
 
 
@@ -222,9 +220,11 @@ func coastline_pass():
  
 # generates hex climates based on latitude     
 func generate_latitude_pass():
-  var total_latitude:float = 180 # 180 degrees from 90N to -90S
+  if WorldManager.end_latitude < 0: WorldManager.end_latitude *= -1
+  
+  var total_latitude:float = WorldManager.start_latitude + (WorldManager.end_latitude)
   var latitude_step:float = total_latitude / world_y
-  var current_latitude:float = 90 # 90 degrees for 90N
+  var current_latitude:float = WorldManager.start_latitude
   var current_temperature:float = -24
   var northern_temp_step:float = 0.7 * (latitude_step)
   var southern_temp_step:float = 0.5 * (latitude_step)
@@ -270,15 +270,15 @@ func generate_climate_pass():
           total_precip += n.annual_percipitation
           if !n.is_land: water_count += 1
         
-        if water_count == 3: terrain_array[x][y].annual_percipitation = 700
-        else: terrain_array[x][y].annual_percipitation = (total_precip / neighbors.size()) 
-        if water_count >= 1: terrain_array[x][y].average_annual_temp = ((total_temp / neighbors.size()))
+        if water_count >= 3: terrain_array[x][y].annual_percipitation = 700
+        else: terrain_array[x][y].annual_percipitation = (total_precip / neighbors.size()) * (world_scale) 
+        if water_count >= 1: terrain_array[x][y].average_annual_temp = (total_temp / neighbors.size()) * (world_scale)
         
 
 
 # checks the bottom right or top left hexes of given coord depending on prevailing winds
 func get_prevailing_wind_hexes(coord:Vector2) -> Array[terrain_hex]: # this whole this is kinda gross
-  # easterlies == less precipitation, westerlies == more precipitation
+  # easterlies == less precipitation, westerlies == more precipitation # NOT YET
 
   var temp_hex_array:Array[terrain_hex]
   var lat = terrain_array[coord.x][coord.y].hex_latitude

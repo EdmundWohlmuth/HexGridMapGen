@@ -8,8 +8,8 @@ noise_type = 2
 frequency = 0.045
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ixgil"]
-width = 64
-height = 32
+width = 100
+height = 50
 noise = SubResource("FastNoiseLite_tef1l")
 
 [sub_resource type="Environment" id="Environment_tef1l"]
@@ -17,7 +17,6 @@ background_mode = 1
 
 [node name="Map" type="Node3D"]
 script = ExtResource("1_uh34i")
-world_size = 100
 terrain_array = Array[Array]([[Object(Node3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -14.2679),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"script":Resource("res://Scripts/Terrain/terrain_hex.gd"))
 , Object(Node3D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","transform":Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0, -14.2679),"rotation_edit_mode":0,"rotation_order":2,"top_level":false,"visible":true,"visibility_parent":NodePath(""),"script":Resource("res://Scripts/Terrain/terrain_hex.gd"))
 ], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []])

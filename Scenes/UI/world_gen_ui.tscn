@@ -36,11 +36,13 @@ offset_top = 47.0
 offset_right = 974.0
 offset_bottom = 92.0
 current_tab = 0
-tab_count = 4
+tab_count = 6
 tab_0/title = "Base Generation Settings"
 tab_1/title = "Climate Settings"
 tab_2/title = "Oceans Settings"
 tab_3/title = "World Settings"
+tab_4/title = "Lore"
+tab_5/title = "Presets"
 
 [node name="GenerateButton" type="Button" parent="."]
 layout_mode = 0
@@ -243,9 +245,51 @@ offset_top = 100.0
 offset_right = 338.0
 offset_bottom = 598.0
 
+[node name="WrapPlanetLabel" type="Label" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+text = "Wrap Planet"
+
+[node name="CheckButton" type="CheckButton" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+button_pressed = true
+
+[node name="HSeparator" type="HSeparator" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+
+[node name="NLatLabel" type="Label" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+text = "Most Notherly Latitude"
+
+[node name="NortherlyHSlider" type="HSlider" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+min_value = -90.0
+max_value = 90.0
+value = 90.0
+
+[node name="NLatTextLabel" type="Label" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+
+[node name="SLatLabel2" type="Label" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+text = "Most Southernly Latitude"
+
+[node name="SoutherlyHSlider" type="HSlider" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+min_value = -90.0
+max_value = 90.0
+value = -90.0
+
+[node name="SLatTextLabel" type="Label" parent="BaseGenOptionsHolder/WorldBoxContainer"]
+layout_mode = 2
+
 [connection signal="tab_clicked" from="TabBar" to="." method="_on_tab_bar_tab_clicked"]
 [connection signal="pressed" from="GenerateButton" to="." method="_on_generate_button_pressed"]
 [connection signal="toggled" from="BaseGenOptionsHolder/VBoxContainer/RandCheckButton" to="." method="_on_rand_check_button_toggled"]
+[connection signal="text_changed" from="BaseGenOptionsHolder/VBoxContainer/SeedTextEdit" to="." method="_on_seed_text_edit_text_changed"]
 [connection signal="item_selected" from="BaseGenOptionsHolder/VBoxContainer/GenOptionButton" to="." method="_on_gen_option_button_item_selected"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/PassesHSlider2" to="." method="_on_passes_h_slider_2_value_changed"]
@@ -253,3 +297,5 @@ offset_bottom = 598.0
 [connection signal="value_changed" from="BaseGenOptionsHolder/ClimateBoxContainer/ClimatePassSlider" to="." method="_on_climate_pass_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/SeaLevelsLabel/SeaLevelSlider" to="." method="_on_sea_level_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/SeaRatioLabel/SeaRatioSlider" to="." method="_on_sea_ratio_slider_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/WorldBoxContainer/NortherlyHSlider" to="." method="_on_northerly_h_slider_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/WorldBoxContainer/SoutherlyHSlider" to="." method="_on_southerly_h_slider_value_changed"]

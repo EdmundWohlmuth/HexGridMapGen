@@ -32,27 +32,31 @@ extends Control
 @onready var sea_level_slider: HSlider = $BaseGenOptionsHolder/OceansBoxContainer/SeaLevelsLabel/SeaLevelSlider
 @onready var sea_ratio_slider: HSlider = $BaseGenOptionsHolder/OceansBoxContainer/SeaRatioLabel/SeaRatioSlider
 
+@onready var northerly_h_slider: HSlider = $BaseGenOptionsHolder/WorldBoxContainer/NortherlyHSlider
+@onready var n_lat_text_label: Label = $BaseGenOptionsHolder/WorldBoxContainer/NLatTextLabel
+@onready var southerly_h_slider: HSlider = $BaseGenOptionsHolder/WorldBoxContainer/SoutherlyHSlider
+@onready var s_lat_text_label: Label = $BaseGenOptionsHolder/WorldBoxContainer/SLatTextLabel
+
 
 var rng = RandomNumberGenerator.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-  size_label.text = str(h_slider.value)
-  WorldManager.size = h_slider.value
+  _on_h_slider_value_changed(h_slider.value)
   
-  passes_num_label.text =  "Passes: " + str(passes_h_slider_2.value)
-  WorldManager.gen_passes = passes_h_slider_2.value
+  _on_passes_h_slider_2_value_changed(passes_h_slider_2.value)
   
-  weight_num_label.text =  "Weight: " + str(weight_h_slider.value)
-  WorldManager.gen_weight = weight_h_slider.value
+  _on_weight_h_slider_value_changed(weight_h_slider.value)
   
   WorldManager.seed = rng.randi()
   
-  climate_pass_num_label.text =  "Passes: " + str(climate_pass_slider.value)
-  WorldManager.climate_passes = climate_pass_slider.value
+  _on_climate_pass_slider_value_changed(climate_pass_slider.value)
   
-  WorldManager.sea_level = sea_level_slider.value
-  WorldManager.inital_land_ratio = sea_ratio_slider.value
+  _on_sea_ratio_slider_value_changed(sea_ratio_slider.value)
+  _on_sea_level_slider_value_changed(sea_level_slider.value)
+  
+  _on_northerly_h_slider_value_changed(northerly_h_slider.value)
+  _on_southerly_h_slider_value_changed(southerly_h_slider.value)
 
 ## TAB BAR IS SELECTED
 func _on_tab_bar_tab_clicked(tab: int) -> void:
@@ -132,3 +136,30 @@ func _on_sea_level_slider_value_changed(value: float) -> void:
 
 func _on_sea_ratio_slider_value_changed(value: float) -> void:
   WorldManager.inital_land_ratio = sea_ratio_slider.value
+
+
+func _on_northerly_h_slider_value_changed(value: float) -> void:
+  WorldManager.start_latitude = value
+  if value >= 0:
+    n_lat_text_label.text = str(value)
+    n_lat_text_label.text += " N"
+  else:
+    n_lat_text_label.text = str(value * -1)
+    n_lat_text_label.text += " S" 
+  
+  southerly_h_slider.max_value = value
+
+func _on_southerly_h_slider_value_changed(value: float) -> void:
+  WorldManager.end_latitude = value
+  if value >= 0: 
+    s_lat_text_label.text = str(value)
+    s_lat_text_label.text += " N"
+  else:
+    s_lat_text_label.text = str(value * -1)
+    s_lat_text_label.text += " S"
+    
+  northerly_h_slider.min_value = value
+
+
+func _on_seed_text_edit_text_changed() -> void:
+  WorldManager.seed = int(seed_text_edit.text)
