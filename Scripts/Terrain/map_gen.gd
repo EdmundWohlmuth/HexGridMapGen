@@ -247,9 +247,9 @@ func generate_latitude_pass():
         var neighbors:Array[terrain_hex] = get_neighbor_array(Vector2(x,y))
         for n in neighbors:
           if !n.is_land: 
-            terrain_array[x][y].annual_percipitation = 500
+            terrain_array[x][y].annual_percipitation = (500 / world_scale)
             break
-      else: terrain_array[x][y].annual_percipitation = 700
+      else: terrain_array[x][y].annual_percipitation = (700 / world_scale)
 
 func generate_climate_pass():
   var neighbors:Array[terrain_hex]
