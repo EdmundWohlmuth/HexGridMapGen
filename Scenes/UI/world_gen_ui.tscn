@@ -204,6 +204,7 @@ offset_left = 12.0
 offset_top = 100.0
 offset_right = 338.0
 offset_bottom = 598.0
+theme_override_constants/separation = 25
 
 [node name="SeaLevelsLabel" type="Label" parent="BaseGenOptionsHolder/OceansBoxContainer"]
 visible = false
@@ -236,6 +237,24 @@ min_value = 10.0
 max_value = 90.0
 step = 0.1
 value = 60.0
+
+[node name="HSeparator2" type="HSeparator" parent="BaseGenOptionsHolder/OceansBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="OceanDepthLabel" type="Label" parent="BaseGenOptionsHolder/OceansBoxContainer/HSeparator2"]
+visible = false
+text = "Ocean Shallows"
+
+[node name="OceanDepthSlider" type="HSlider" parent="BaseGenOptionsHolder/OceansBoxContainer/HSeparator2/OceanDepthLabel"]
+layout_mode = 2
+offset_top = 27.0
+offset_right = 326.0
+offset_bottom = 43.0
+min_value = 0.001
+max_value = 0.1
+step = 0.001
+value = 0.01
 
 [node name="WorldBoxContainer" type="VBoxContainer" parent="BaseGenOptionsHolder"]
 visible = false
@@ -297,5 +316,6 @@ layout_mode = 2
 [connection signal="value_changed" from="BaseGenOptionsHolder/ClimateBoxContainer/ClimatePassSlider" to="." method="_on_climate_pass_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/SeaLevelsLabel/SeaLevelSlider" to="." method="_on_sea_level_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/SeaRatioLabel/SeaRatioSlider" to="." method="_on_sea_ratio_slider_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/HSeparator2/OceanDepthLabel/OceanDepthSlider" to="." method="_on_ocean_depth_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/WorldBoxContainer/NortherlyHSlider" to="." method="_on_northerly_h_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/WorldBoxContainer/SoutherlyHSlider" to="." method="_on_southerly_h_slider_value_changed"]

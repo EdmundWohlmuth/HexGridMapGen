@@ -31,6 +31,9 @@ extends Control
 @onready var sea_ratio_label: Label = $BaseGenOptionsHolder/OceansBoxContainer/SeaRatioLabel
 @onready var sea_level_slider: HSlider = $BaseGenOptionsHolder/OceansBoxContainer/SeaLevelsLabel/SeaLevelSlider
 @onready var sea_ratio_slider: HSlider = $BaseGenOptionsHolder/OceansBoxContainer/SeaRatioLabel/SeaRatioSlider
+@onready var ocean_depth_label: Label = $BaseGenOptionsHolder/OceansBoxContainer/HSeparator2/OceanDepthLabel
+@onready var ocean_depth_slider: HSlider = $BaseGenOptionsHolder/OceansBoxContainer/HSeparator2/OceanDepthLabel/OceanDepthSlider
+
 
 @onready var northerly_h_slider: HSlider = $BaseGenOptionsHolder/WorldBoxContainer/NortherlyHSlider
 @onready var n_lat_text_label: Label = $BaseGenOptionsHolder/WorldBoxContainer/NLatTextLabel
@@ -57,6 +60,8 @@ func _ready() -> void:
   
   _on_northerly_h_slider_value_changed(northerly_h_slider.value)
   _on_southerly_h_slider_value_changed(southerly_h_slider.value)
+  
+  _on_ocean_depth_slider_value_changed(ocean_depth_slider.value)
 
 ## TAB BAR IS SELECTED
 func _on_tab_bar_tab_clicked(tab: int) -> void:
@@ -111,10 +116,12 @@ func _on_gen_option_button_item_selected(index: int) -> void:
       WorldManager.gen_type = WorldManager.gen_types.random
       sea_levels_label.visible = false
       sea_ratio_label.visible = true
+      ocean_depth_label.visible = false
     1: 
       WorldManager.gen_type = WorldManager.gen_types.noise_gen
       sea_levels_label.visible = true
       sea_ratio_label.visible = false
+      ocean_depth_label.visible = true
       
 
 
@@ -163,3 +170,7 @@ func _on_southerly_h_slider_value_changed(value: float) -> void:
 
 func _on_seed_text_edit_text_changed() -> void:
   WorldManager.seed = int(seed_text_edit.text)
+
+
+func _on_ocean_depth_slider_value_changed(value: float) -> void:
+  WorldManager.ocean_depth = ocean_depth_slider.value

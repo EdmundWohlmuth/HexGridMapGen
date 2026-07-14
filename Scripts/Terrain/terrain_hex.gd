@@ -15,6 +15,17 @@ var hex_temperature:float
 var hex_latitude:float
 var is_north:bool
 
+enum wind_dir
+{
+  WEST,
+  EAST,
+  NORTH_WEST,
+  NORTH_EAST,
+  SOUTH_WEST,
+  SOUTH_EAST
+}
+var current_wind_dir:wind_dir
+
 func set_biome(biome:WorldManager.biomes):
   if biome == hex_biome: return
   if hex_mesh == null: return

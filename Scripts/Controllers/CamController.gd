@@ -42,7 +42,7 @@ func shoot_ray():
   if result != {}: final_result = result.collider.get_parent()
   
   if final_result != null:
-    emit_signal("hex_clicked", test, WorldManager.biomes.find_key(final_result.hex_biome), final_result.hex_latitude, final_result.hex_temperature, final_result.annual_percipitation, final_result.continent_id)
+    emit_signal("hex_clicked", test, WorldManager.biomes.find_key(final_result.hex_biome), final_result.hex_latitude, final_result.hex_temperature, final_result.annual_percipitation, final_result.continent_id, terrain_hex.wind_dir.find_key(final_result.current_wind_dir))
   #else: emit_signal("clicked_off")
   
 

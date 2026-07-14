@@ -8,6 +8,7 @@ extends Control
 @onready var temperature_label = $Panel/TemperatureLabel
 @onready var precipitation_label = $Panel/PrecipitationLabel
 @onready var continent_label = $Panel/ContinentLabel
+@onready var wind_label: Label = $Panel/WindLabel
 
 @onready var regen_button: Button = $Panel/RegenButton ## TEMP
 
@@ -19,7 +20,7 @@ func _ready():
 func _process(_delta):
   pass
   
-func display_hex_data(_name:String, _biome:String, _latitude:float, _temperature:float, _precip:float, _id:int):
+func display_hex_data(_name:String, _biome:String, _latitude:float, _temperature:float, _precip:float, _id:int, wind:String):
   panel.visible = true
   province_name_label.text = "Terra Nova"
   biome_label.text = "Biome: " + _biome
@@ -31,6 +32,7 @@ func display_hex_data(_name:String, _biome:String, _latitude:float, _temperature
   temperature_label.text = "Temp: " + str(_temperature) + " C"
   precipitation_label.text = "Precipitation: " + str(_precip) + " mm"
   continent_label.text = "ID: " + str(_id)
+  wind_label.text = wind
 
 func hide_hex_data():
   panel.visible = false
