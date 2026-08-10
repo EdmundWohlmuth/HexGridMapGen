@@ -176,22 +176,28 @@ func noise_fill_land():
       if noise_tex.noise.get_noise_2d(x_float,y_float) > sea_level -WorldManager.ocean_depth && !hex.is_land:
         hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
       
-      print("value: " + str(noise_tex.noise.get_noise_2d(x_float,y_float)))
+      print(str(Vector2(x_float, y_float)))
 
 ## GENERATES LAND FROM IMAGE DATA
 func image_fill_land():
+  #print("width " +str(WorldManager.image.get_width()))
+  #print("height " +str(WorldManager.image.get_height()))
+  
   for y in world_y:
-    var y_float:float = y / world_scale
+    var y_float:float = ((y / world_scale) * (world_size / 6.4))
     for x in world_x:
-      var x_float:float = x / world_scale
+      var x_float:float = ((x / world_scale) * (world_size / 6.4))
       var hex = terrain_array[x][y]
       
       if WorldManager.image.is_compressed(): WorldManager.image.decompress()
-      var pixel_color:Color = WorldManager.image.get_pixel(x_float,y_float)
+      var pixel_color:Color = WorldManager.image.get_pixel(x_float, y_float)
       
-      if pixel_color.b > (sea_level + 1) / 2: hex.set_biome(WorldManager.biomes.GRASSLAND)
-      else: hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
+      if pixel_color.get_luminance() < 0.215: hex.set_biome(WorldManager.biomes.GRASSLAND)
+      elif pixel_color.get_luminance() < 0.28: hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
+      else: hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
     
+      #print(str(Vector2(x_float, y_float)))
+      #print("checked level: " + str(pixel_color.get_luminance()))
       
 
 ## Smooths out the terrain generation by looking for nearby terrains to fill out the map

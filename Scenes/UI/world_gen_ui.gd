@@ -178,7 +178,7 @@ func _on_gen_option_button_item_selected(index: int) -> void:
       ocean_depth_label.visible = true
       noise_type_option.visible = false
       
-      set_preview_image()
+      #set_preview_image()
       WorldManager.set_image_noise()
 
 func _on_passes_h_slider_2_value_changed(value: float) -> void:
