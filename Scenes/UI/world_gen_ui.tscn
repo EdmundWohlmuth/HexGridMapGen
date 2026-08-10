@@ -365,11 +365,12 @@ offset_bottom = 40.0
 
 [node name="PreviewTextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 494.0
+offset_left = 418.0
 offset_top = 155.0
-offset_right = 1085.0
-offset_bottom = 432.0
+offset_right = 1058.0
+offset_bottom = 475.0
 texture = SubResource("NoiseTexture2D_mfhll")
+expand_mode = 2
 
 [connection signal="tab_clicked" from="TabBar" to="." method="_on_tab_bar_tab_clicked"]
 [connection signal="pressed" from="GenerateButton" to="." method="_on_generate_button_pressed"]

@@ -178,7 +178,7 @@ func _on_gen_option_button_item_selected(index: int) -> void:
       ocean_depth_label.visible = true
       noise_type_option.visible = false
       
-      #set_preview_image()
+      preview_texture_rect.texture = WorldManager.earth_image_compressed
       WorldManager.set_image_noise()
 
 func _on_passes_h_slider_2_value_changed(value: float) -> void:
@@ -241,6 +241,7 @@ func _on_ocean_depth_slider_value_changed(value: float) -> void:
 func _on_noise_type_option_item_selected(index: int) -> void:
   var texture = NoiseTexture2D.new()
   texture.noise = FastNoiseLite.new()
+  preview_texture_rect.texture = texture
   
   texture.noise.frequency = 0.045    
   texture.width = WorldManager.size / world_scale

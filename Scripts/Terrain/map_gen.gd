@@ -184,16 +184,16 @@ func image_fill_land():
   #print("height " +str(WorldManager.image.get_height()))
   
   for y in world_y:
-    var y_float:float = ((y / world_scale) * (world_size / 6.4))
+    var y_float:float = (y / world_scale) * 15.625
     for x in world_x:
-      var x_float:float = ((x / world_scale) * (world_size / 6.4))
+      var x_float:float = (x / world_scale) * 15.625
       var hex = terrain_array[x][y]
       
       if WorldManager.image.is_compressed(): WorldManager.image.decompress()
       var pixel_color:Color = WorldManager.image.get_pixel(x_float, y_float)
       
-      if pixel_color.get_luminance() < 0.215: hex.set_biome(WorldManager.biomes.GRASSLAND)
-      elif pixel_color.get_luminance() < 0.28: hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
+      if pixel_color.get_luminance() < 0.13: hex.set_biome(WorldManager.biomes.GRASSLAND)
+      elif pixel_color.get_luminance() < 0.3: hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
       else: hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
     
       #print(str(Vector2(x_float, y_float)))
