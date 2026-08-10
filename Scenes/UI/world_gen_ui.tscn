@@ -1,7 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://bxjxlsyojd4xi"]
+[gd_scene load_steps=8 format=3 uid="uid://bxjxlsyojd4xi"]
 
 [ext_resource type="Script" uid="uid://emw42bop14cq" path="res://Scenes/UI/world_gen_ui.gd" id="1_uwpn4"]
 [ext_resource type="Texture2D" uid="uid://2ptid0y34p1f" path="res://Assets/Textures/Planet_Earth.png" id="2_mfhll"]
+
+[sub_resource type="Gradient" id="Gradient_mfhll"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.5)
+colors = PackedColorArray(0.174294, 0.315844, 0.685226, 1, 0.401609, 0.732468, 0.314572, 1)
+metadata/_snap_count = 100
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_tef1l"]
 noise_type = 2
@@ -12,17 +18,13 @@ width = 100
 height = 50
 seamless = true
 seamless_blend_skirt = 1.0
+color_ramp = SubResource("Gradient_mfhll")
 noise = SubResource("FastNoiseLite_tef1l")
 
-[sub_resource type="Gradient" id="Gradient_mfhll"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0, 0.5)
-colors = PackedColorArray(0.174294, 0.315844, 0.685226, 1, 0.401609, 0.732468, 0.314572, 1)
-metadata/_snap_count = 100
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_mfhll"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mfhll"]
-width = 64
-height = 30
+noise = SubResource("FastNoiseLite_mfhll")
 
 [node name="WorldGen_UI" type="Control"]
 layout_mode = 3
@@ -362,7 +364,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="PreviewTextureRect" type="TextureRect" parent="."]
-visible = false
 layout_mode = 0
 offset_left = 494.0
 offset_top = 155.0

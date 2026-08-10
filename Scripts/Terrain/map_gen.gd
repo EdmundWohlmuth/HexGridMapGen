@@ -32,7 +32,7 @@ enum gen_types
 @export var gen_passes:int = 6
 @export var gen_weight:int = 2
 @export var climate_passes:int = 2
-@export var sea_level:float = -0.5
+@export var sea_level:float = 0
 
 var world_scale:float = 1.0
 
@@ -74,6 +74,7 @@ func ready_map_maker():
   noise_tex = WorldManager.noise_texture
   
   ready_size_dependant_vars()
+  print("sea_level: " + str(sea_level))
   
   for x in temp_terrain_array.size():
     for y in temp_terrain_array[x].size():
@@ -91,9 +92,11 @@ func ready_map_maker():
       pass
     WorldManager.gen_types.noise_gen:
       noise_fill_land()
+      should_smooth = false
       #border_smooth_pass()
     WorldManager.gen_types.image:
       image_fill_land()
+      should_smooth = false
     gen_types.blank:
       pass
   
@@ -172,6 +175,8 @@ func noise_fill_land():
       
       if noise_tex.noise.get_noise_2d(x_float,y_float) > sea_level -WorldManager.ocean_depth && !hex.is_land:
         hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
+      
+      print("value: " + str(noise_tex.noise.get_noise_2d(x_float,y_float)))
 
 ## GENERATES LAND FROM IMAGE DATA
 func image_fill_land():

@@ -169,7 +169,7 @@ func _on_gen_option_button_item_selected(index: int) -> void:
       ocean_depth_label.visible = true
       noise_type_option.visible = true
       preview_texture_rect.visible = true
-      set_preview_image()
+      _on_noise_type_option_item_selected(0)
     
     2:
       WorldManager.gen_type = WorldManager.gen_types.image
@@ -196,6 +196,10 @@ func _on_climate_pass_slider_value_changed(value: float) -> void:
 
 func _on_sea_level_slider_value_changed(value: float) -> void:
   WorldManager.sea_level = sea_level_slider.value
+  
+  if WorldManager.noise_texture.noise.get_noise_type() == 2:
+     WorldManager.sea_level -= 0.5
+    
   set_preview_image()
 
 func _on_sea_ratio_slider_value_changed(value: float) -> void:
@@ -239,38 +243,25 @@ func _on_noise_type_option_item_selected(index: int) -> void:
   texture.noise = FastNoiseLite.new()
   
   texture.noise.frequency = 0.045    
-  texture.width = 100
-  texture.height = 50
+  texture.width = WorldManager.size / world_scale
+  texture.height = (WorldManager.size / world_scale) / 2 
   
   match index:
-    0:  
-      texture.noise.set_noise_type(FastNoiseLite.TYPE_CELLULAR)
-      sea_level_slider.value = 0
-      WorldManager.noise_texture = texture
-      set_preview_image()
-    1: 
-      texture.noise.set_noise_type(FastNoiseLite.TYPE_SIMPLEX)
-      sea_level_slider.value = 0
-      WorldManager.noise_texture = texture
-      set_preview_image()
-    2: 
-      texture.noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)  
-      sea_level_slider.value = 0 
-      WorldManager.noise_texture = texture
-      set_preview_image()
-    3: 
-      texture.noise.set_noise_type(FastNoiseLite.TYPE_VALUE)
-      sea_level_slider.value = 0
-      WorldManager.noise_texture = texture
-      set_preview_image()  
+    0: texture.noise.set_noise_type(FastNoiseLite.TYPE_CELLULAR)
+    1: texture.noise.set_noise_type(FastNoiseLite.TYPE_SIMPLEX)
+    2: texture.noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)  
+    3: texture.noise.set_noise_type(FastNoiseLite.TYPE_VALUE)
+    
+  WorldManager.noise_texture = texture
+  set_preview_image()
 
 func set_preview_image():
   if WorldManager.gen_type != WorldManager.gen_types.noise_gen: return
   
   preview_texture_rect.texture.noise.frequency = 0.045
   preview_texture_rect.texture.width = WorldManager.size / world_scale
-  preview_texture_rect.texture.height = (WorldManager.size / world_scale) / 2 
-  preview_gradient.set_offset(1, ((sea_level_slider.value + 1) / 2)) #TODO: THERE'S SOME SORT OF OFFSET HERE, ABOUT - 0.25f AT SIZE 100
+  preview_texture_rect.texture.height = (WorldManager.size / world_scale) / 2
+  preview_gradient.set_offset(1, ((sea_level_slider.value + 1) / 2)) #TODO:THERE'S SOME SORT OF OFFSET HERE, ABOUT - 0.25f AT SIZE 100
   preview_texture_rect.texture.color_ramp = preview_gradient
   preview_texture_rect.texture.noise.seed = WorldManager.seed
-  preview_texture_rect.texture = WorldManager.noise_texture
+  preview_texture_rect.texture =  WorldManager.noise_texture

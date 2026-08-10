@@ -45,7 +45,6 @@ transform = Transform3D(0.642788, 0, -0.766044, 0, 1, 0, 0.766044, 0, 0.642788, 
 environment = SubResource("Environment_bgu88")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="PlanetPivotNode"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 light_energy = 2.0
 shadow_enabled = true
 omni_range = 44.5
