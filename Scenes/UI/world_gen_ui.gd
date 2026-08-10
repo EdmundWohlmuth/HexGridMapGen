@@ -6,6 +6,8 @@ extends Control
 @onready var climate_box_container: VBoxContainer = $BaseGenOptionsHolder/ClimateBoxContainer
 @onready var oceans_box_container: VBoxContainer = $BaseGenOptionsHolder/OceansBoxContainer
 @onready var world_box_container: VBoxContainer = $BaseGenOptionsHolder/WorldBoxContainer
+@onready var lore_container: VBoxContainer = $BaseGenOptionsHolder/LoreContainer
+@onready var presets_container: VBoxContainer = $BaseGenOptionsHolder/PresetsContainer
 
 
 @onready var rand_check_button: CheckButton = $BaseGenOptionsHolder/VBoxContainer/RandCheckButton
@@ -40,8 +42,19 @@ extends Control
 @onready var southerly_h_slider: HSlider = $BaseGenOptionsHolder/WorldBoxContainer/SoutherlyHSlider
 @onready var s_lat_text_label: Label = $BaseGenOptionsHolder/WorldBoxContainer/SLatTextLabel
 
+@export var noise_texture_1:Texture2D
+@export var earth_texture:Texture2D
+@export var preview_gradient:Gradient
+
+@onready var noise_type_option: OptionButton = $BaseGenOptionsHolder/VBoxContainer/NoiseTypeOption
 
 var rng = RandomNumberGenerator.new()
+var world_scale:float = 1.0
+
+@onready var preview_texture_rect: TextureRect = $PreviewTextureRect
+
+var is_ready:bool = false
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -53,6 +66,8 @@ func _ready() -> void:
   
   WorldManager.seed = rng.randi()
   
+  WorldManager.noise_texture = noise_texture_1
+  
   _on_climate_pass_slider_value_changed(climate_pass_slider.value)
   
   _on_sea_ratio_slider_value_changed(sea_ratio_slider.value)
@@ -62,6 +77,8 @@ func _ready() -> void:
   _on_southerly_h_slider_value_changed(southerly_h_slider.value)
   
   _on_ocean_depth_slider_value_changed(ocean_depth_slider.value)
+  
+  is_ready = true
 
 ## TAB BAR IS SELECTED
 func _on_tab_bar_tab_clicked(tab: int) -> void:
@@ -71,30 +88,54 @@ func _on_tab_bar_tab_clicked(tab: int) -> void:
       climate_box_container.visible = false
       oceans_box_container.visible = false
       world_box_container.visible = false
+      lore_container.visible = false
+      presets_container.visible = false
     1: 
       base_box_container.visible = false
       climate_box_container.visible = true
       oceans_box_container.visible = false
       world_box_container.visible = false
+      lore_container.visible = false
+      presets_container.visible = false
     2: 
       base_box_container.visible = false
       climate_box_container.visible = false
       oceans_box_container.visible = true
       world_box_container.visible = false
+      lore_container.visible = false
+      presets_container.visible = false
     3: 
       base_box_container.visible = false
       climate_box_container.visible = false
       oceans_box_container.visible = false
       world_box_container.visible = true
+      lore_container.visible = false
+      presets_container.visible = false
+    4:
+      base_box_container.visible = false
+      climate_box_container.visible = false
+      oceans_box_container.visible = false
+      world_box_container.visible = false
+      lore_container.visible = true
+      presets_container.visible = false
+    5:
+      base_box_container.visible = false
+      climate_box_container.visible = false
+      oceans_box_container.visible = false
+      world_box_container.visible = false
+      lore_container.visible = false
+      presets_container.visible = true
 
 ## CHOOSING RANDOM SEEDS
 func _on_rand_check_button_toggled(toggled_on: bool) -> void:
   if !toggled_on: 
     seed_text_edit.visible = true
     seed_text_edit.text = str(WorldManager.seed)
+    set_preview_image()
   else: 
     seed_text_edit.visible = false
     WorldManager.seed = rng.randi()
+    set_preview_image()
 
 ## LOADS SCENE AND GENERATES WORLD BASED ON CHOSEN PARAMETERS
 func _on_generate_button_pressed() -> void:
@@ -108,6 +149,8 @@ func _on_h_slider_value_changed(value: float) -> void:
   elif value >= 128: size_label.text += " (LARGE)"
   else: size_label.text = str(value)
   WorldManager.size = value
+  world_scale = WorldManager.size / 80
+  if is_ready: set_preview_image()
 
 ## SELECTING GEN TYPE - REVEALS GEN SPECIFIC OPTIONS
 func _on_gen_option_button_item_selected(index: int) -> void:
@@ -117,13 +160,26 @@ func _on_gen_option_button_item_selected(index: int) -> void:
       sea_levels_label.visible = false
       sea_ratio_label.visible = true
       ocean_depth_label.visible = false
+      noise_type_option.visible = false
+      preview_texture_rect.visible = false
     1: 
       WorldManager.gen_type = WorldManager.gen_types.noise_gen
       sea_levels_label.visible = true
       sea_ratio_label.visible = false
       ocean_depth_label.visible = true
+      noise_type_option.visible = true
+      preview_texture_rect.visible = true
+      set_preview_image()
+    
+    2:
+      WorldManager.gen_type = WorldManager.gen_types.image
+      sea_levels_label.visible = true
+      sea_ratio_label.visible = false
+      ocean_depth_label.visible = true
+      noise_type_option.visible = false
       
-
+      set_preview_image()
+      WorldManager.set_image_noise()
 
 func _on_passes_h_slider_2_value_changed(value: float) -> void:
   passes_num_label.text = "Passes: " + str(value)
@@ -140,6 +196,7 @@ func _on_climate_pass_slider_value_changed(value: float) -> void:
 
 func _on_sea_level_slider_value_changed(value: float) -> void:
   WorldManager.sea_level = sea_level_slider.value
+  set_preview_image()
 
 func _on_sea_ratio_slider_value_changed(value: float) -> void:
   WorldManager.inital_land_ratio = sea_ratio_slider.value
@@ -170,7 +227,50 @@ func _on_southerly_h_slider_value_changed(value: float) -> void:
 
 func _on_seed_text_edit_text_changed() -> void:
   WorldManager.seed = int(seed_text_edit.text)
+  set_preview_image()
 
 
 func _on_ocean_depth_slider_value_changed(value: float) -> void:
   WorldManager.ocean_depth = ocean_depth_slider.value
+
+#FastNoiseLite.NoiseType.TYPE_CELLULAR
+func _on_noise_type_option_item_selected(index: int) -> void:
+  var texture = NoiseTexture2D.new()
+  texture.noise = FastNoiseLite.new()
+  
+  texture.noise.frequency = 0.045    
+  texture.width = 100
+  texture.height = 50
+  
+  match index:
+    0:  
+      texture.noise.set_noise_type(FastNoiseLite.TYPE_CELLULAR)
+      sea_level_slider.value = 0
+      WorldManager.noise_texture = texture
+      set_preview_image()
+    1: 
+      texture.noise.set_noise_type(FastNoiseLite.TYPE_SIMPLEX)
+      sea_level_slider.value = 0
+      WorldManager.noise_texture = texture
+      set_preview_image()
+    2: 
+      texture.noise.set_noise_type(FastNoiseLite.TYPE_PERLIN)  
+      sea_level_slider.value = 0 
+      WorldManager.noise_texture = texture
+      set_preview_image()
+    3: 
+      texture.noise.set_noise_type(FastNoiseLite.TYPE_VALUE)
+      sea_level_slider.value = 0
+      WorldManager.noise_texture = texture
+      set_preview_image()  
+
+func set_preview_image():
+  if WorldManager.gen_type != WorldManager.gen_types.noise_gen: return
+  
+  preview_texture_rect.texture.noise.frequency = 0.045
+  preview_texture_rect.texture.width = WorldManager.size / world_scale
+  preview_texture_rect.texture.height = (WorldManager.size / world_scale) / 2 
+  preview_gradient.set_offset(1, ((sea_level_slider.value + 1) / 2)) #TODO: THERE'S SOME SORT OF OFFSET HERE, ABOUT - 0.25f AT SIZE 100
+  preview_texture_rect.texture.color_ramp = preview_gradient
+  preview_texture_rect.texture.noise.seed = WorldManager.seed
+  preview_texture_rect.texture = WorldManager.noise_texture

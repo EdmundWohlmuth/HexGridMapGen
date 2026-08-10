@@ -1,6 +1,28 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxjxlsyojd4xi"]
+[gd_scene load_steps=7 format=3 uid="uid://bxjxlsyojd4xi"]
 
 [ext_resource type="Script" uid="uid://emw42bop14cq" path="res://Scenes/UI/world_gen_ui.gd" id="1_uwpn4"]
+[ext_resource type="Texture2D" uid="uid://2ptid0y34p1f" path="res://Assets/Textures/Planet_Earth.png" id="2_mfhll"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tef1l"]
+noise_type = 2
+frequency = 0.045
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ixgil"]
+width = 100
+height = 50
+seamless = true
+seamless_blend_skirt = 1.0
+noise = SubResource("FastNoiseLite_tef1l")
+
+[sub_resource type="Gradient" id="Gradient_mfhll"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.5)
+colors = PackedColorArray(0.174294, 0.315844, 0.685226, 1, 0.401609, 0.732468, 0.314572, 1)
+metadata/_snap_count = 100
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mfhll"]
+width = 64
+height = 30
 
 [node name="WorldGen_UI" type="Control"]
 layout_mode = 3
@@ -10,6 +32,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uwpn4")
+noise_texture_1 = SubResource("NoiseTexture2D_ixgil")
+earth_texture = ExtResource("2_mfhll")
+preview_gradient = SubResource("Gradient_mfhll")
 
 [node name="BGPanel" type="Panel" parent="."]
 layout_mode = 0
@@ -97,13 +122,32 @@ text = "Generation Type"
 [node name="GenOptionButton" type="OptionButton" parent="BaseGenOptionsHolder/VBoxContainer"]
 layout_mode = 2
 selected = 0
-item_count = 2
+item_count = 3
 popup/item_0/text = "Random"
 popup/item_0/id = 0
 popup/item_1/text = "Noise"
 popup/item_1/id = 1
+popup/item_2/text = "Image"
+popup/item_2/id = 2
 
 [node name="HSeparator2" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+
+[node name="NoiseTypeOption" type="OptionButton" parent="BaseGenOptionsHolder/VBoxContainer"]
+visible = false
+layout_mode = 2
+selected = 0
+item_count = 4
+popup/item_0/text = "Cellular"
+popup/item_0/id = 0
+popup/item_1/text = "Simplex"
+popup/item_1/id = 1
+popup/item_2/text = "Perlin"
+popup/item_2/id = 2
+popup/item_3/text = "Value"
+popup/item_3/id = 3
+
+[node name="HSeparator5" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
 layout_mode = 2
 
 [node name="WorldSizeLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
@@ -216,8 +260,8 @@ layout_mode = 2
 offset_top = 27.0
 offset_right = 326.0
 offset_bottom = 43.0
-min_value = -0.9
-max_value = -0.1
+min_value = -1.0
+max_value = 1.0
 step = 0.001
 value = -0.5
 
@@ -244,6 +288,7 @@ theme_override_constants/separation = 0
 
 [node name="OceanDepthLabel" type="Label" parent="BaseGenOptionsHolder/OceansBoxContainer/HSeparator2"]
 visible = false
+layout_mode = 0
 text = "Ocean Shallows"
 
 [node name="OceanDepthSlider" type="HSlider" parent="BaseGenOptionsHolder/OceansBoxContainer/HSeparator2/OceanDepthLabel"]
@@ -305,11 +350,32 @@ value = -90.0
 [node name="SLatTextLabel" type="Label" parent="BaseGenOptionsHolder/WorldBoxContainer"]
 layout_mode = 2
 
+[node name="LoreContainer" type="VBoxContainer" parent="BaseGenOptionsHolder"]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PresetsContainer" type="VBoxContainer" parent="BaseGenOptionsHolder"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PreviewTextureRect" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 494.0
+offset_top = 155.0
+offset_right = 1085.0
+offset_bottom = 432.0
+texture = SubResource("NoiseTexture2D_mfhll")
+
 [connection signal="tab_clicked" from="TabBar" to="." method="_on_tab_bar_tab_clicked"]
 [connection signal="pressed" from="GenerateButton" to="." method="_on_generate_button_pressed"]
 [connection signal="toggled" from="BaseGenOptionsHolder/VBoxContainer/RandCheckButton" to="." method="_on_rand_check_button_toggled"]
 [connection signal="text_changed" from="BaseGenOptionsHolder/VBoxContainer/SeedTextEdit" to="." method="_on_seed_text_edit_text_changed"]
 [connection signal="item_selected" from="BaseGenOptionsHolder/VBoxContainer/GenOptionButton" to="." method="_on_gen_option_button_item_selected"]
+[connection signal="item_selected" from="BaseGenOptionsHolder/VBoxContainer/NoiseTypeOption" to="." method="_on_noise_type_option_item_selected"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/PassesHSlider2" to="." method="_on_passes_h_slider_2_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/WeightHSlider" to="." method="_on_weight_h_slider_value_changed"]

@@ -50,6 +50,7 @@ enum gen_types
   random,
   continents,
   noise_gen,
+  image,
   blank
 }
 var gen_type:gen_types = gen_types.noise_gen
@@ -67,3 +68,13 @@ var ocean_depth:float = 0.01
 var map_wrap:bool = true
 var start_latitude:float = 90.0
 var end_latitude:float = 90.0
+
+var noise_texture:NoiseTexture2D
+var earth_image_compressed:Texture2D = preload("res://Assets/Textures/Planet_Earth.png")
+var image:Image
+  
+func set_image_noise():
+  image = earth_image_compressed.get_image()
+  
+  
+  

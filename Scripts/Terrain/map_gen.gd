@@ -11,6 +11,8 @@ const HEX_HEIGHT:float = 1.73205080757 # 2 * 1 (hex radius)
 
 @export var continents_list:Array[Array]
 
+var height_map:HeightMapShape3D
+
 @export var noise_tex:NoiseTexture2D
 
 @export_category("World Gen Settings")
@@ -42,15 +44,19 @@ var world_y:int
 
 var first_gen:bool = true
 
+var evaporation_rate:float = 0.15
+
+@export var _color:Color
+
 @onready var camera = $Camera3D
+
+@export var temp_tex:NoiseTexture2D
 
 func _ready():
   SignalManager.connect("_regenerate_terrain", ready_map_maker)
   ready_map_maker()
-  if !is_rand: is_rand = true
+  #if !is_rand: is_rand = true
   
-  print("seed: " + str(WorldManager.seed))
-
 func ready_size_dependant_vars():
   world_scale = world_size / 80.0
   print("scale " + str(world_scale))
@@ -65,6 +71,8 @@ func ready_map_maker():
   sea_level = WorldManager.sea_level
   inital_land_ratio = WorldManager.inital_land_ratio
   _seed = WorldManager.seed
+  noise_tex = WorldManager.noise_texture
+  
   ready_size_dependant_vars()
   
   for x in temp_terrain_array.size():
@@ -76,14 +84,16 @@ func ready_map_maker():
   generate_map()
   
   match WorldManager.gen_type:
-    gen_types.random:
+    WorldManager.gen_types.random:
       random_fill_land()
       should_smooth = true
-    gen_types.continents:
+    WorldManager.gen_types.continents:
       pass
-    gen_types.noise_gen:
+    WorldManager.gen_types.noise_gen:
       noise_fill_land()
       #border_smooth_pass()
+    WorldManager.gen_types.image:
+      image_fill_land()
     gen_types.blank:
       pass
   
@@ -94,10 +104,12 @@ func ready_map_maker():
   coastline_pass()
   generate_latitude_pass()
   for x in climate_passes:
-    generate_climate_pass()
+    generate_climate_pass(x)
     generate_biome_pass()
 
 func generate_map():
+  print("seed: " + str(WorldManager.seed))
+  
   world_x = world_size
   world_y = roundi(world_size / 2)
   
@@ -109,6 +121,7 @@ func generate_map():
   
   var actual_x = (world_y / 2) * -1
   var actual_z = actual_x
+
   
   ## === GENERATE MAP === ##
   for y in world_y:
@@ -135,7 +148,7 @@ func generate_map():
 
   ## ============================================================= ##     
 
-# randomly sets terrain hexes to be either land or water
+## randomly sets terrain hexes to be either land or water
 func random_fill_land():
   for y in world_y:
     for x in world_x:
@@ -144,7 +157,8 @@ func random_fill_land():
         hex.set_biome(WorldManager.biomes.GRASSLAND)
       else: 
         hex.set_biome(WorldManager.biomes.OPEN_OCEAN)
- 
+        
+## CREATES LAND AND OCEAN BASED OFF NOISE DATA
 func noise_fill_land():
   noise_tex.noise.seed = WorldManager.seed
   
@@ -159,8 +173,23 @@ func noise_fill_land():
       if noise_tex.noise.get_noise_2d(x_float,y_float) > sea_level -WorldManager.ocean_depth && !hex.is_land:
         hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
 
+## GENERATES LAND FROM IMAGE DATA
+func image_fill_land():
+  for y in world_y:
+    var y_float:float = y / world_scale
+    for x in world_x:
+      var x_float:float = x / world_scale
+      var hex = terrain_array[x][y]
+      
+      if WorldManager.image.is_compressed(): WorldManager.image.decompress()
+      var pixel_color:Color = WorldManager.image.get_pixel(x_float,y_float)
+      
+      if pixel_color.b > (sea_level + 1) / 2: hex.set_biome(WorldManager.biomes.GRASSLAND)
+      else: hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
+    
+      
 
-# Smooths out the terrain generation by looking for nearby terrains to fill out the map
+## Smooths out the terrain generation by looking for nearby terrains to fill out the map
 func smooth_terrain_pass(_pass:int): # LOOK INTO - can probably be multi-purpose
   var temp_array:Array[Array]
   
@@ -197,7 +226,7 @@ func border_smooth_pass():
     var neighbor = terrain_array[0][hex]
     if neighbor.is_land: terrain_array[0][hex].set_biome(WorldManager.biomes.GRASSLAND)
    
-# Sets any deep water hex that borders a land hex to a littoral_salt_water biome     
+## Sets any deep water hex that borders a land hex to a littoral_salt_water biome     
 func coastline_pass():
   var temp_array:Array[Array]
   
@@ -213,7 +242,7 @@ func coastline_pass():
         
       if neighbor_count >= 1 && !terrain_array[y][x].is_land: terrain_array[y][x].set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
  
-# generates hex climates based on latitude     
+## generates hex climates based on latitude     
 func generate_latitude_pass():
   if WorldManager.end_latitude < 0: WorldManager.end_latitude *= -1
   
@@ -223,6 +252,21 @@ func generate_latitude_pass():
   var current_temperature:float = -24
   var northern_temp_step:float = 0.7 * (latitude_step)
   var southern_temp_step:float = 0.5 * (latitude_step)
+  
+  if WorldManager.start_latitude != 90:
+    
+    var temp_latitude:float = 90.0
+    if WorldManager.start_latitude > 0:
+      for y in world_y: 
+        temp_latitude -= latitude_step
+        current_temperature += northern_temp_step
+        if temp_latitude <= current_latitude: break
+    else:
+      for y in world_y: 
+        temp_latitude -= latitude_step
+        current_temperature -= southern_temp_step
+        if temp_latitude <= current_latitude: break
+      
   
   for y in world_y:
     current_latitude -= latitude_step
@@ -246,12 +290,32 @@ func generate_latitude_pass():
             break
       else: terrain_array[x][y].annual_percipitation = (700 / world_scale)
 
-func generate_climate_pass():
+## SETS PRECIPITATION AND TEMPERATURE
+func generate_climate_pass(_pass:int):
   var neighbors:Array[terrain_hex]
+  var start_int_y:int
+  var start_int_x:int
+  var end_int_y:int
+  var end_int_x:int
+  var step:int
+  
+  # Either start top to bottom or bottom to top for evening things out
+  if _pass % 2 == 0:
+    start_int_y = 0
+    start_int_x = 0
+    end_int_y = world_y -1
+    end_int_x = world_x -1
+    step = 1
+  else: 
+    start_int_y = world_y -1
+    start_int_x = world_x -1
+    end_int_x = 0
+    end_int_y = 0
+    step = -1
 
-  for y in world_y:
+  for y in range(start_int_y, end_int_y, step):
     # get neighbors
-    for x in world_x: 
+    for x in range(start_int_x, end_int_x, step): 
       #if terrain_array[x][y].is_land:
         neighbors = get_prevailing_wind_hexes(Vector2(x, y))
         
@@ -273,18 +337,18 @@ func generate_climate_pass():
         #else: terrain_array[x][y].average_annual_temp += ((total_temp / neighbors.size()) * (world_scale))
         
         # PRECIPITATION
-        #for w in total_water_neighbors.size():
-          #if !total_water_neighbors[w].is_land: total_neighbor_moisture += total_water_neighbors[w].annual_percipitation
+        for w in total_water_neighbors.size():
+          if !total_water_neighbors[w].is_land: total_neighbor_moisture += total_water_neighbors[w].annual_percipitation
         
-        if water_count >= 3 || !terrain_array[x][y].is_land: terrain_array[x][y].annual_percipitation = 700
-        elif water_count >= 1: terrain_array[x][y].annual_percipitation += (total_precip / neighbors.size()) / ((total_temp / neighbors.size()) * 0.1)
+        if water_count >= 3 || !terrain_array[x][y].is_land: terrain_array[x][y].annual_percipitation += (total_precip / neighbors.size()) * world_scale
+        elif water_count >= 1: terrain_array[x][y].annual_percipitation += ((total_precip / neighbors.size()) / (total_temp * evaporation_rate)) * world_scale
         else: 
-          if total_temp / 3 > 0:
-            terrain_array[x][y].annual_percipitation += ((total_precip / neighbors.size()) / ((total_temp / neighbors.size()) * 0.1))
-          elif total_temp / 3 < 0:
-            total_temp *= -1
-            terrain_array[x][y].annual_percipitation = ((total_precip / neighbors.size()) / ((total_temp / neighbors.size()) * 0.1))
-          else: total_precip / neighbors.size()
+          if total_temp / neighbors.size() > 0:
+            terrain_array[x][y].annual_percipitation = (((total_precip / neighbors.size()) / (total_temp * evaporation_rate) * world_scale))
+          else:
+            pass 
+            #terrain_array[x][y].annual_percipitation += ((total_precip / neighbors.size()) / (((total_temp * -1) / neighbors.size()) * 0.1))
+          #else: terrain_array[x][y].annual_percipitation += (total_precip / neighbors.size()) * 0.1
         
 
 ## checks the bottom right or top left hexes of given coord depending on prevailing winds
@@ -296,23 +360,23 @@ func get_prevailing_wind_hexes(coord:Vector2) -> Array[terrain_hex]: # this whol
   
   # check latitude to determine which direction to check
   if lat >= 60: # POLAR CELL
-    temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,2,3])
-    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.SOUTH_EAST
+    temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,6,5])
+    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.NORTH_WEST
   elif lat >= 30: # N WESTERLIES CELL
     temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,2,3])
-    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.NORTH_EAST
+    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.SOUTH_WEST
   elif lat >= 0:  # NORTHEASTERLY TRADE
     temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [6,5,4])
-    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.SOUTH_WEST
+    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.NORTH_EAST
   elif lat >= -30: # SOUTHEASTERLY TRADE
     temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [2,3,4])
-    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.NORTH_WEST
+    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.SOUTH_EAST
   elif lat >= -60: # S WESTERLIES
-    temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,5,5])
-    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.NORTH_EAST
+    temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,5,6])
+    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.NORTH_WEST
   else: # POLAR CELL
-    temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,6,5])
-    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.NORTH_EAST
+    temp_hex_array = get_neighbor_array(Vector2(coord.x, coord.y), [1,6,2])
+    terrain_array[coord.x][coord.y].current_wind_dir = terrain_array[coord.x][coord.y].wind_dir.EAST
 
   return temp_hex_array
 
@@ -362,7 +426,7 @@ func generate_biome_pass():
             if precip > target_wobble(200, 75): 
               terrain_array[x][y].set_biome(WorldManager.biomes.SEASONAL_FOREST)
               break
-            elif precip > target_wobble(140, 50): 
+            elif precip > target_wobble(50, 50): 
               terrain_array[x][y].set_biome(WorldManager.biomes.SHRUBLAND)
               break
             elif precip > target_wobble(25, 25): 
@@ -371,17 +435,17 @@ func generate_biome_pass():
             else: 
               terrain_array[x][y].set_biome(WorldManager.biomes.DESERT)
               break
-          elif temp > target_wobble(10, 1):
-            if precip > target_wobble(1000, 75): 
+          elif temp > target_wobble(13, 1):
+            if precip > target_wobble(1000, 25): 
               terrain_array[x][y].set_biome(WorldManager.biomes.TEMPERATE_RAINFOREST)
               break
             elif precip > target_wobble(180, 50): 
               terrain_array[x][y].set_biome(WorldManager.biomes.SEASONAL_FOREST)
               break
-            elif precip > target_wobble(120, 25): 
+            elif precip > target_wobble(80, 25): 
               terrain_array[x][y].set_biome(WorldManager.biomes.SHRUBLAND)
               break
-            elif precip > target_wobble(80, 15): 
+            elif precip > target_wobble(25, 15): 
               terrain_array[x][y].set_biome(WorldManager.biomes.GRASSLAND)
               break
             else: 
@@ -391,10 +455,10 @@ func generate_biome_pass():
             if precip > target_wobble(300, 75):
               terrain_array[x][y].set_biome(WorldManager.biomes.SEASONAL_FOREST)
               break
-            if precip > target_wobble(22, 50): 
+            if precip > target_wobble(100, 50): 
               terrain_array[x][y].set_biome(WorldManager.biomes.BOREAL_FOREST)
               break
-            elif precip > target_wobble(205, 25): 
+            elif precip > target_wobble(50, 25): 
               terrain_array[x][y].set_biome(WorldManager.biomes.SHRUBLAND)
               break
             else: 
