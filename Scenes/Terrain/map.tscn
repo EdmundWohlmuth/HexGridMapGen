@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://ddikbmyttje32"]
+[gd_scene load_steps=8 format=3 uid="uid://ddikbmyttje32"]
 
 [ext_resource type="Script" uid="uid://bfgfvelyll6ge" path="res://Scripts/Terrain/map_gen.gd" id="1_uh34i"]
 [ext_resource type="Script" uid="uid://cthunmyy8v28f" path="res://Scripts/Controllers/CamController.gd" id="2_1wtl7"]
+[ext_resource type="PackedScene" uid="uid://isf8mxpnti11" path="res://Scenes/Managers/time_manager.tscn" id="3_ixgil"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ixgil"]
 
@@ -39,3 +40,5 @@ zoom_speed = 80.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.258819, 0.965926, 0, -0.965926, -0.258819, 0, 3, 0)
+
+[node name="TimeManager" parent="." instance=ExtResource("3_ixgil")]

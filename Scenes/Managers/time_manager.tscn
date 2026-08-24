@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3 uid="uid://isf8mxpnti11"]
+
+[ext_resource type="Script" uid="uid://bf7qk50n8uvon" path="res://Scripts/Managers/TimeManager.gd" id="1_3cqhi"]
+
+[node name="TimeManager" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_3cqhi")
+
+[node name="TickTimer" type="Timer" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 781.0
+offset_right = 1153.0
+offset_bottom = 73.0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="PauseButton" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "||"
+
+[node name="Speed1Button" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "1x"
+
+[node name="Speed2Button" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "2x"
+
+[node name="Speed2Button2" type="Button" parent="HBoxContainer"]
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "3x"
+
+[node name="ClockLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 787.0
+offset_top = 75.0
+offset_right = 1147.0
+offset_bottom = 138.0
+theme_override_font_sizes/font_size = 28
+text = "DAY / MONTH / YEAR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="HBoxContainer/PauseButton" to="." method="_on_pause_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Speed1Button" to="." method="_on_speed_1_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Speed2Button" to="." method="_on_speed_2_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/Speed2Button2" to="." method="_on_speed_2_button_2_pressed"]
