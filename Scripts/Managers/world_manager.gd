@@ -20,13 +20,14 @@ const MOUNTAIN = preload("res://Assets/Materials/Feature_Mats/Mountain.tres")
 
 enum terrain_features
 {
-  FORESTED,         # Multually exclusive with: RANGELANDS, CROPLANDS, DENSE SETTLEMENT
-  NAVIGABLE_RIVER,  # Multually exclusive with: HILLS, MOUNTAINS
-  HILLS,            # Multually exclusive with: NAVIGABLE RIVER, CROPLANDS, DENSE SETTLEMENT, MOUNTAINS
-  MOUNTAINS,        # Multually exclusive with: NAVIGABLE RIVER, CROPLANDS, DENSE SETTLEMENT, HILLS, RANGELANDS
-  RANGELANDS,       # Multually exclusive with: FORESTED, CROPLANDS, DENSE SETTLEMENT, MOUNTAINS
-  CROPLANDS,        # Multually exclusive with: FORESTED, RANGELANDS, DENSE SETTLEMENT, HILLS, MOUNTAINS
-  DENSE_SETTLEMENTS # Multually exclusive with: FORESTED, CROPLANDS, RANGELANDS, MOUNTAINS
+  FORESTED,          # Multually exclusive with: RANGELANDS, CROPLANDS, DENSE SETTLEMENT
+  NAVIGABLE_RIVER,   # Multually exclusive with: HILLS, MOUNTAINS
+  HILLS,             # Multually exclusive with: NAVIGABLE RIVER, CROPLANDS, DENSE SETTLEMENT, MOUNTAINS
+  MOUNTAINS,         # Multually exclusive with: NAVIGABLE RIVER, CROPLANDS, DENSE SETTLEMENT, HILLS, RANGELANDS
+  RANGELANDS,        # Multually exclusive with: FORESTED, CROPLANDS, DENSE SETTLEMENT, MOUNTAINS
+  CROPLANDS,         # Multually exclusive with: FORESTED, RANGELANDS, DENSE SETTLEMENT, HILLS, MOUNTAINS
+  DENSE_SETTLEMENTS, # Multually exclusive with: FORESTED, CROPLANDS, RANGELANDS, MOUNTAINS
+  NONE
 }
 enum biomes
 {
@@ -72,6 +73,8 @@ var end_latitude:float = 90.0
 var noise_texture:NoiseTexture2D
 var earth_image_compressed:Texture2D = preload("res://Assets/Textures/Planet_Earth.png")
 var image:Image
+
+var ruggedness:float = 0
   
 func set_image_noise():
   image = earth_image_compressed.get_image()

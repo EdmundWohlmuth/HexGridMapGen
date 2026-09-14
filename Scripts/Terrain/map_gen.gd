@@ -33,6 +33,7 @@ enum gen_types
 @export var gen_weight:int = 2
 @export var climate_passes:int = 2
 @export var sea_level:float = 0
+@export var ruggedness:float = 0
 
 var world_scale:float = 1.0
 
@@ -44,7 +45,7 @@ var world_y:int
 
 var first_gen:bool = true
 
-var evaporation_rate:float = 0.15
+var evaporation_rate:float = 0.5
 
 @export var _color:Color
 
@@ -69,6 +70,7 @@ func ready_map_maker():
   gen_weight = WorldManager.gen_weight
   climate_passes = WorldManager.climate_passes
   sea_level = WorldManager.sea_level
+  ruggedness = WorldManager.ruggedness
   inital_land_ratio = WorldManager.inital_land_ratio
   _seed = WorldManager.seed
   noise_tex = WorldManager.noise_texture
@@ -109,6 +111,11 @@ func ready_map_maker():
   for x in climate_passes:
     generate_climate_pass(x)
     generate_biome_pass()
+  
+  elevation_pass()
+  for x in gen_passes:
+    elevation_smooth(WorldManager.terrain_features.HILLS)
+    #elevation_smooth(WorldManager.terrain_features.MOUNTAINS)
 
 func generate_map():
   print("seed: " + str(WorldManager.seed))
@@ -176,7 +183,7 @@ func noise_fill_land():
       if noise_tex.noise.get_noise_2d(x_float,y_float) > sea_level -WorldManager.ocean_depth && !hex.is_land:
         hex.set_biome(WorldManager.biomes.SALT_WATER_LITTORAL)
       
-      print(str(Vector2(x_float, y_float)))
+      #print(str(Vector2(x_float, y_float)))
 
 ## GENERATES LAND FROM IMAGE DATA
 func image_fill_land():
@@ -200,7 +207,8 @@ func image_fill_land():
       #print("checked level: " + str(pixel_color.get_luminance()))
       
 
-## Smooths out the terrain generation by looking for nearby terrains to fill out the map
+## Smooths out the terrain generation by looking for nearby terrains to fill out the map, 
+## argument 2 specifies to smooth biomes (0), or features (1)
 func smooth_terrain_pass(_pass:int): # LOOK INTO - can probably be multi-purpose
   var temp_array:Array[Array]
   
@@ -262,7 +270,7 @@ func generate_latitude_pass():
   var current_latitude:float = WorldManager.start_latitude
   var current_temperature:float = -24
   var northern_temp_step:float = 0.7 * (latitude_step)
-  var southern_temp_step:float = 0.5 * (latitude_step)
+  var southern_temp_step:float = 0.6 * (latitude_step)
   
   if WorldManager.start_latitude != 90:
     
@@ -342,25 +350,38 @@ func generate_climate_pass(_pass:int):
           total_precip += n.annual_percipitation
           if !n.is_land: water_count += 1
         
-        # TEMPERATURE
-        #if water_count >= 3 && !terrain_array[x][y].is_land: terrain_array[x][y].average_annual_temp += ((total_temp) * (world_scale))
-        #elif water_count >= 1 && terrain_array[x][y].average_annual_temp < 0: terrain_array[x][y].average_annual_temp -= ((total_temp / neighbors.size()) * (world_scale))
-        #else: terrain_array[x][y].average_annual_temp += ((total_temp / neighbors.size()) * (world_scale))
+        # TEMPERATURE #
+        #if water_count >= 3 && !terrain_array[x][y].is_land && terrain_array[x][y].average_annual_temp < 0: 
+          #terrain_array[x][y].average_annual_temp = (total_temp / neighbors.size()) * world_scale 
+        #elif water_count >= 3 && !terrain_array[x][y].is_land && terrain_array[x][y].average_annual_temp > 0:
+          #terrain_array[x][y].average_annual_temp = (total_temp / neighbors.size()) * world_scale 
+          
+        #elif water_count >= 1 && terrain_array[x][y].average_annual_temp < 0: 
+          #terrain_array[x][y].average_annual_temp -= ((total_temp / neighbors.size()) * (world_scale))
+        #elif water_count >= 1 && terrain_array[x][y].average_annual_temp > 0:
+          #terrain_array[x][y].average_annual_temp += ((total_temp / neighbors.size()) * (world_scale))
         
-        # PRECIPITATION
+        terrain_array[x][y].hex_temperature = terrain_array[x][y].average_annual_temp
+        
+        # PRECIPITATION #
         for w in total_water_neighbors.size():
           if !total_water_neighbors[w].is_land: total_neighbor_moisture += total_water_neighbors[w].annual_percipitation
         
         if water_count >= 3 || !terrain_array[x][y].is_land: terrain_array[x][y].annual_percipitation += (total_precip / neighbors.size()) * world_scale
-        elif water_count >= 1: terrain_array[x][y].annual_percipitation += ((total_precip / neighbors.size()) / (total_temp * evaporation_rate)) * world_scale
+        elif water_count >= 1: terrain_array[x][y].annual_percipitation += ((total_precip / neighbors.size()) * world_scale)
         else: 
           if total_temp / neighbors.size() > 0:
-            terrain_array[x][y].annual_percipitation = (((total_precip / neighbors.size()) / (total_temp * evaporation_rate) * world_scale))
+            terrain_array[x][y].annual_percipitation = (((total_precip / neighbors.size()) * world_scale) * evaporation_rate)
           else:
-            pass 
+            pass #/ ((total_temp / 2) * evaporation_rate)
             #terrain_array[x][y].annual_percipitation += ((total_precip / neighbors.size()) / (((total_temp * -1) / neighbors.size()) * 0.1))
           #else: terrain_array[x][y].annual_percipitation += (total_precip / neighbors.size()) * 0.1
         
+        if terrain_array[x][y].annual_percipitation > 2000: terrain_array[x][y].annual_percipitation = 2000
+                    
+        #if terrain_array[x][y].current_wind_dir == terrain_hex.wind_dir.NORTH_EAST || terrain_hex.wind_dir.NORTH_WEST: 
+          #terrain_array[x][y].annual_percipitation = terrain_array[x][y].annual_percipitation / 2
+        #else: pass
 
 ## checks the bottom right or top left hexes of given coord depending on prevailing winds
 func get_prevailing_wind_hexes(coord:Vector2) -> Array[terrain_hex]: # this whole this is kinda gross
@@ -495,6 +516,45 @@ func generate_biome_pass():
           else:
             terrain_array[x][y].set_biome(WorldManager.biomes.ICE)
             break                
+
+## Sets Hills and Mountains
+func elevation_pass():
+  for y in world_y:
+    for x in world_x:
+      var hex = terrain_array[x][y]
+      var value:int = randi_range(0, 100)
+      if value <= ruggedness && hex.is_land: 
+        hex.set_feature(WorldManager.terrain_features.HILLS)
+  
+  #for y in world_y:
+    #for x in world_x:
+      #var hex = terrain_array[x][y]
+      #var value:int = randi_range(0, 100)
+      #if value <= ruggedness && hex.is_land: 
+        #hex.set_feature(WorldManager.terrain_features.MOUNTAINS)
+
+func elevation_smooth(_feature:WorldManager.terrain_features):
+  var temp_array:Array[Array]
+  
+  for y in terrain_array.size():
+    temp_array.append([])
+    for x in terrain_array[y].size():
+      var neighbors:Array = get_neighbor_array(Vector2(y, x))
+      var neighbor_count:int = 0
+      var feature_to_smooth:Array[WorldManager.terrain_features] = [0, 0]
+      
+      feature_to_smooth[0] = _feature
+
+      for n:terrain_hex in neighbors:
+        if n.hex_biome == feature_to_smooth[0]: neighbor_count += 1
+      
+      if neighbor_count > gen_weight: temp_array[y].append(feature_to_smooth[0])
+      else: temp_array[y].append(feature_to_smooth[1])
+
+  for a in temp_array.size():
+    for b in temp_array[a].size():
+      terrain_array[a][b].set_feature(temp_array[a][b])
+  
 
 ## returns a random float with between +wobble & -wobble around the target float
 func target_wobble(target:float, wobble:float) -> float:

@@ -266,3 +266,7 @@ func set_preview_image():
   preview_texture_rect.texture.color_ramp = preview_gradient
   preview_texture_rect.texture.noise.seed = WorldManager.seed
   preview_texture_rect.texture =  WorldManager.noise_texture
+
+
+func _on_ruggedness_h_slider_value_changed(value: float) -> void:
+  WorldManager.ruggedness = value

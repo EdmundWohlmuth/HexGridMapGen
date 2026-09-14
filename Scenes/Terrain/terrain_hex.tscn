@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=4 uid="uid://c6b8uocrpts1c"]
+[gd_scene load_steps=9 format=4 uid="uid://c6b8uocrpts1c"]
 
 [ext_resource type="Script" uid="uid://b7iuyd64cpdp2" path="res://Scripts/Terrain/terrain_hex.gd" id="1_yyq6c"]
+[ext_resource type="Material" uid="uid://df4vdta18hbhp" path="res://Assets/Materials/Feature_Mats/Mountain.tres" id="2_6yd0p"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sfmjm"]
 
@@ -38,6 +39,10 @@ shadow_mesh = SubResource("ArrayMesh_x10me")
 height = 0.371436
 radius = 1.15145
 
+[sub_resource type="SphereMesh" id="SphereMesh_r07x7"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_5nub2"]
+
 [node name="TerrainHex" type="Node3D"]
 script = ExtResource("1_yyq6c")
 
@@ -50,3 +55,52 @@ skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("CylinderShape3D_eiydo")
+
+[node name="HillsMesh" type="Node3D" parent="."]
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HillsMesh"]
+mesh = SubResource("SphereMesh_r07x7")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="HillsMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.2, 0.3)
+mesh = SubResource("SphereMesh_r07x7")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="HillsMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, -0.1, 0.3)
+mesh = SubResource("SphereMesh_r07x7")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="HillsMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.142674, -0.4)
+mesh = SubResource("SphereMesh_r07x7")
+skeleton = NodePath("../..")
+
+[node name="MountainsMesh" type="Node3D" parent="."]
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MountainsMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+mesh = SubResource("PrismMesh_5nub2")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_6yd0p")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MountainsMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0.4, 0.2)
+mesh = SubResource("PrismMesh_5nub2")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_6yd0p")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="MountainsMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.5, 0.1)
+mesh = SubResource("PrismMesh_5nub2")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_6yd0p")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="MountainsMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.457327, -0.1)
+mesh = SubResource("PrismMesh_5nub2")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_6yd0p")

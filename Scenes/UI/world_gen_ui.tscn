@@ -202,6 +202,21 @@ value = 2.0
 [node name="WeightNumLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
 layout_mode = 2
 
+[node name="HSeparator6" type="HSeparator" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+
+[node name="RuggednessLabel" type="Label" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "(Lower the number the more small islands.)"
+mouse_filter = 1
+text = "World Ruggedness (Hills & Mountains)"
+
+[node name="RuggednessHSlider" type="HSlider" parent="BaseGenOptionsHolder/VBoxContainer"]
+layout_mode = 2
+max_value = 25.0
+step = 0.1
+value = 15.0
+
 [node name="ClimateBoxContainer" type="VBoxContainer" parent="BaseGenOptionsHolder"]
 visible = false
 layout_mode = 0
@@ -381,6 +396,7 @@ expand_mode = 2
 [connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/PassesHSlider2" to="." method="_on_passes_h_slider_2_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/WeightHSlider" to="." method="_on_weight_h_slider_value_changed"]
+[connection signal="value_changed" from="BaseGenOptionsHolder/VBoxContainer/RuggednessHSlider" to="." method="_on_ruggedness_h_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/ClimateBoxContainer/ClimatePassSlider" to="." method="_on_climate_pass_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/SeaLevelsLabel/SeaLevelSlider" to="." method="_on_sea_level_slider_value_changed"]
 [connection signal="value_changed" from="BaseGenOptionsHolder/OceansBoxContainer/SeaRatioLabel/SeaRatioSlider" to="." method="_on_sea_ratio_slider_value_changed"]
